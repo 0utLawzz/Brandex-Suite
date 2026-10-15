@@ -39,13 +39,16 @@ export default function IntakeForm() {
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setError(""); setMessage("");
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     if (!selected && !createClient) { setError("Select an existing client or choose Create new client."); setBusy(false); return; }
     if (selected) form.set("client_id", selected.id); form.set("origin", origin);
     try {
       const response = await fetch("/api/intake", { method: "POST", body: form }); const body = await response.json();
       if (!response.ok) throw new Error(body.error ?? "Could not create the case.");
-      setMessage(`Case ${body.caseNumber} created successfully.`); event.currentTarget.reset(); setSelected(null); setCreateClient(false); setQuery(""); setOrigin("fresh");
+      setMessage(`Case ${body.caseNumber} created successfully.`); formElement.reset(); setSelected(null); setCreateClient(false); setQuery(""); setOrigin("fresh");
+      // A fresh navigation also discards case lists prefetched before intake.
+      window.location.assign(`/cases/${body.id}`);
     } catch (submitError) { setError(submitError instanceof Error ? submitError.message : "Could not create the case."); } finally { setBusy(false); }
   }
 

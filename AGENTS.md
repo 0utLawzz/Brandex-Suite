@@ -50,3 +50,16 @@ Lives in the same database as cases, not standalone — payment status should al
 - Full build spec with more detail: see `/docs/BUILD_SPEC.md` in this repo (or the linked Claude Doc).
 - When committing, use clear commit messages describing what changed, e.g. `feat: add case intake form with origin toggle`.
 - Case creation is Admin-only — update RLS insert policy on cases and clients accordingly. Agents and Viewers cannot create cases.
+
+## Continuation notes — 15 October 2026
+
+- Phases 1–3 are implemented. Continue with Phase 4 (mail merge/template library); do not rebuild the intake or import legacy test data.
+- `/login` uses existing Supabase password Auth. Staff accounts are provisioned outside the app; no public signup or permanent test users.
+- `/cases` is the ledger entry point; `/cases/[id]` displays core details, case status, paid/pending totals, and ledger entries. This is not the final role dashboard.
+- Ledger writes are Admin-only in both the API and existing RLS. Agents/Viewers get read-only case-scoped views. Never use a service-role client in app code.
+- A pending entry becomes paid by editing its status. Totals sum amounts per status; do not subtract paid entries from pending or invent invoice/refund/currency rules.
+- Amount validation matches numeric(12,2). Validate calendar dates and scope entry updates/deletes by both case and entry ID.
+- The intake cleanup migration allows Admin deletion of case-image objects while their case still exists. Remove objects before deleting a failed case; preserve and report the case ID if cleanup fails.
+- `docs/BUILD_SPEC.md` records confirmed decisions, current gaps, and prior security-advisor findings. Exact origin workflows and actual mail-merge output/templates are still pending.
+- Keep `asset/` conversation/CSV reference files and existing unrelated package.json changes out of feature commits. Never publish local credentials or test-session state.
+- Update progress/instructions and commit/push completed modifications, per the explicit instruction in the local authoritative chat history.

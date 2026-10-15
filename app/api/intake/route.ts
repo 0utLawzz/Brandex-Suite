@@ -24,6 +24,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Complete the client, case number, and origin fields." }, { status: 400 });
   }
 
+  const files = form.getAll("images").filter((value): value is File => value instanceof File && value.size > 0);
+  if (files.some(file => !imageTypes.has(file.type) || file.size > maxImageBytes)) {
+    return NextResponse.json({ error: "Images must be JPG, PNG, or WebP files under 8 MB each." }, { status: 400 });
+  }
+
   let resolvedClientId = clientId;
   let createdClient = false;
   let caseId = "";
@@ -42,7 +47,6 @@ export async function POST(request: Request) {
     if (caseError || !caseRecord) throw new Error(caseError?.message ?? "Could not create case.");
     caseId = caseRecord.id;
 
-    const files = form.getAll("images").filter((value): value is File => value instanceof File && value.size > 0);
     const images: Array<{ path: string; name: string; contentType: string; size: number }> = [];
     for (const file of files) {
       if (!imageTypes.has(file.type) || file.size > maxImageBytes) throw new Error("Images must be JPG, PNG, or WebP files under 8 MB each.");
@@ -56,9 +60,18 @@ export async function POST(request: Request) {
     if (updateError) throw new Error(updateError.message);
     return NextResponse.json({ id: caseId, caseNumber: `${caseRecord.case_prefix}-${caseRecord.case_number}` }, { status: 201 });
   } catch (error) {
-    if (uploadedPaths.length) await supabase.storage.from("case-images").remove(uploadedPaths);
-    if (caseId) await supabase.from("cases").delete().eq("id", caseId);
-    if (createdClient && resolvedClientId) await supabase.from("clients").delete().eq("id", resolvedClientId);
+    if (uploadedPaths.length) {
+      const { error: cleanupError } = await supabase.storage.from("case-images").remove(uploadedPaths);
+      if (cleanupError) return NextResponse.json({ error: `Upload failed and image cleanup could not finish. Case ${caseId} was kept for Admin recovery.` }, { status: 500 });
+    }
+    if (caseId) {
+      const { error: cleanupError } = await supabase.from("cases").delete().eq("id", caseId);
+      if (cleanupError) return NextResponse.json({ error: `Intake failed and case ${caseId} could not be removed. Admin recovery is required.` }, { status: 500 });
+    }
+    if (createdClient && resolvedClientId) {
+      const { error: cleanupError } = await supabase.from("clients").delete().eq("id", resolvedClientId);
+      if (cleanupError) return NextResponse.json({ error: `Intake failed and client ${resolvedClientId} could not be removed. Admin recovery is required.` }, { status: 500 });
+    }
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not create case." }, { status: 400 });
   }
 }
