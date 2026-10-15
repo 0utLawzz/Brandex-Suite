@@ -11,6 +11,7 @@
 - Verification: production build/TypeScript and 3 merge/DOCX unit tests pass; 35 live mail-merge checks and 40 ledger regression checks pass. Browser checks verified template creation, additional-field preview, actual generation, persisted history, and no browser warnings/errors.
 - Generated DOCX/XML and embedded images were inspected. Pixel render attempt failed because LibreOffice is absent; original-template page fidelity is not claimed.
 - Existing lint-command repair and platform-created rls_auto_enable advisor warnings remain separate. Phase 5 dashboards are pending.
+- Deployment correction: the initial `supabase/` ignore rule also matched `lib/supabase/` in Vercel's Git build, removing app clients. Narrowed the rule to `supabase/.temp/`. Local template/integration tests were unaffected. The temporary invitation confirmation/password-setup session test also passed.
 
 ## 2026-10-15 — Handoff reconciliation and Phase 3 ledger
 

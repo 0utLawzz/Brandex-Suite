@@ -1,6 +1,6 @@
 asset/
 work/
 scripts/
-supabase/
+supabase/.temp/
 *.tsbuildinfo
 .env*
