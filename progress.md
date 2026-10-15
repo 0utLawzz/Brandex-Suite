@@ -6,6 +6,8 @@
 - Applied `20261015231711_phase5_role_dashboards.sql`: synced staff email labels, tightened case update policy for role demotion, indexed assignments, and replaced Agent core guard with an allowlist protecting all other columns.
 - Database lint: no schema errors. Security advisor reports only the previously recorded platform function and leaked-password-protection notices; no new app finding.
 - Local validation: 34 live Phase 5 checks passed with real Auth sessions and direct Data API denial tests; 6 existing unit tests passed. Browser confirmed sign-in routes to dashboard and status/assessment persists after save. All generated test data is removed after verification.
+- Ledger regression: all 40 live checks passed. Final production build passed.
+- Production release `8789ea9` / `dpl_9MNxYWEfYurLeLuqk8nKbSULb8Df` reached READY at https://brandex-suite.vercel.app. All 34 Phase 5 checks passed again against production; generated fixtures/users were removed. The three user-provisioned staff account roles remain Admin, Agent, and Viewer as requested.
 - Exact statutory stage transitions and original-template page fidelity remain follow-up decisions; they are not claimed implemented by Phase 5.
 
 # Brandex Suite Progress
