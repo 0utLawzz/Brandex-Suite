@@ -12,6 +12,8 @@
 - Generated DOCX/XML and embedded images were inspected. Pixel render attempt failed because LibreOffice is absent; original-template page fidelity is not claimed.
 - Existing lint-command repair and platform-created rls_auto_enable advisor warnings remain separate. Phase 5 dashboards are pending.
 - Deployment correction: the initial `supabase/` ignore rule also matched `lib/supabase/` in Vercel's Git build, removing app clients. Narrowed the rule to `supabase/.temp/`. Local template/integration tests were unaffected. The temporary invitation confirmation/password-setup session test also passed.
+- Production deployment `dpl_BejCEZsFWdS9pLSHmjvkN4RTAVLN` reached READY from commit `266b570` at https://brandex-suite.vercel.app. Live browser preview and merge interaction verified; HTTP checks returned 200 for root/preview/login and redirected unauthenticated cases to login. No deployment protection settings were disabled.
+- Reviewed and applied a sparse hosted Auth config: disabled public self-signup and changed site_url to the production domain; CLI confirmed all undeclared settings were left unchanged. Added the sparse deployment config and disabled signup in local config as well.
 
 ## 2026-10-15 — Handoff reconciliation and Phase 3 ledger
 

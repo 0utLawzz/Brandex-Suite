@@ -1,0 +1,6 @@
+# Sparse hosted configuration: undeclared project properties stay unchanged.
+project_id = "brandex-suite"
+
+[auth]
+enable_signup = false
+site_url = "https://brandex-suite.vercel.app"

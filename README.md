@@ -40,6 +40,12 @@ For live integration tests, run the app locally and execute `node scripts/verify
 
 `node scripts/verify-mail-merge.mjs` uses the same setup to verify template/category writes, generation, private downloads, RLS, origin restrictions, snapshots, and archive behavior. It leaves a sample generated file under ignored `work/` for inspection and removes all remote test fixtures.
 
+## Deployment
+
+The Vercel project is `projectsb/brandex-suite`; the production URL is [brandex-suite.vercel.app](https://brandex-suite.vercel.app). Pushes to `main` deploy through the Git integration. Production/Preview need only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+
+Staff access is invitation-only in Supabase Auth, including the direct signup API. `deployment/supabase/config.toml` contains only the hosted Auth properties managed by this repo. Review `supabase --workdir deployment config diff --project-ref xogbpsnsmephupbqsfgb` before applying them with `config push`; unrelated remote settings must remain unchanged.
+
 The existing `npm run lint` script still uses the removed Next.js `next lint` command; it is not a passing verification command. ESLint configuration/tooling repair remains separate from this feature.
 
 ## Foundation
