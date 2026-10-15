@@ -1,0 +1,6 @@
+asset/
+work/
+scripts/
+supabase/
+*.tsbuildinfo
+.env*

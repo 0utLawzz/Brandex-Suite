@@ -1,0 +1,10 @@
+import Link from "next/link";
+import { Navbar } from "@/components/ui/navbar";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import MailMergePanel from "@/components/mail-merge-panel";
+
+export default function PreviewPage() {
+  const values = { client_code: "DEMO-001", trading_as: "Northstar Foods", address: "Sample address, Islamabad", case_prefix: "TM", case_number: "DEMO-1049", case_code: "TM-DEMO-1049", origin: "fresh", stage: "Filing", status: "Ready", assessment: "", generated_date: "2026-10-15" };
+  return <><Navbar /><main className="phase-page"><div className="page-top"><div><Badge tone="yellow">SAMPLE WORKSPACE</Badge><p className="eyebrow">BRANDEX SUITE / PREVIEW</p><h1>One case. Every detail.</h1><p className="muted">Explore sample case details, payments, and document preparation. This page contains fictional data.</p></div><Link className="nb-button nb-button-accent" href="/login">STAFF SIGN IN</Link></div><Card><p className="eyebrow">TM-DEMO-1049 / FRESH APPLICATION</p><h2>Northstar Foods</h2><p>DEMO-001 · Sample address, Islamabad</p><Badge tone="teal">READY FOR FILING</Badge></Card><div className="payment-summary"><Card><p className="eyebrow">PAID</p><strong>15,000.00</strong></Card><Card><p className="eyebrow">PENDING</p><strong>5,000.00</strong></Card><Card><p className="eyebrow">STAGE</p><strong>Filing</strong></Card></div><Card><MailMergePanel caseId="demo" values={values} categories={[{ id: "filing", name: "Filing" }]} templates={[{ id: "summary", name: "Case information sheet", category_id: "filing", allowed_origins: ["fresh", "stage2", "stage3"], archived: false, description: "A sample showing automatic client/case fields and an additional document field.", content: "CASE INFORMATION\n\nClient: {{trading_as}}\nClient code: {{client_code}}\nAddress: {{address}}\nCase: {{case_code}}\nOrigin: {{origin}}\nStage: {{stage}}\nStatus: {{status}}\n\nPrepared for: {{custom.recipient}}\nDate: {{generated_date}}" }]} documents={[]} canGenerate={false} demo /></Card></main></>;
+}

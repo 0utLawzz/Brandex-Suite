@@ -2,7 +2,7 @@
 
 Brandex Suite consolidates case processing, client payments, and mail-merge documents into one Next.js + Supabase application.
 
-Phases 1–3 are implemented: database/Auth/RLS, Admin case intake, and per-case ledger management. Mail merge and role dashboards are the next phases. See [the reconciled build spec](docs/BUILD_SPEC.md) and [progress](progress.md) for the implementation audit and remaining work.
+Phases 1–4 are implemented: database/Auth/RLS, Admin case intake, per-case ledger management, and the template library/mail merge. Role dashboards are the next phase. See [the reconciled build spec](docs/BUILD_SPEC.md) and [progress](progress.md) for the implementation audit and remaining work.
 
 ## Local setup
 
@@ -12,7 +12,17 @@ Phases 1–3 are implemented: database/Auth/RLS, Admin case intake, and per-case
 4. Create users through Supabase Auth. The signup trigger creates a `public.profiles` row with the safe default role `viewer`.
 5. Promote the first admin from the Supabase SQL editor using a narrowly scoped query such as `update public.profiles set role = 'admin' where id = '<exact-user-uuid>';`.
 
-Open `/login` to sign in with a Supabase staff account, then `/cases` to browse accessible cases and their ledgers. Admins can create cases at `/intake`. This build does not create permanent staff accounts or provide public signup. The landing page and login configuration message can render without Supabase variables; authenticated pages require them.
+Open `/preview` for a fictional sample workspace or `/login` to sign in with a Supabase staff account. `/cases` shows accessible cases and their ledgers/documents. Admins create cases at `/intake` and manage templates at `/templates`. There is no public signup. Staff provisioning is an explicit administration operation; the selected first Admin receives a private setup link and chooses their own password.
+
+## Templates and mail merge
+
+- Admins create/edit/archive templates, add categories, and configure eligible case origins. Viewers and Agents can read the library.
+- Use core placeholders such as `{{trading_as}}`, `{{address}}`, and `{{case_code}}`. Extra required fields use `{{custom.field_name}}`. `{{case_images}}` must be on its own line and requires intake images.
+- Inside a case, select a template, enter additional values, inspect merged text, and generate an editable A4 `.docx`. The server reloads authoritative case/client/template data, checks origin eligibility, embeds images, saves the private file, and logs its immutable content/field snapshot.
+- Generation is Admin-only. Viewer downloads cover all cases; Agent downloads cover assigned cases. Downloads redirect to a signed URL valid for 60 seconds. Stored references are bucket paths, not permanent public URLs.
+- Template edits/archiving preserve historical documents. Repeat requests with the same generation ID reuse the existing document.
+- The live library contains TM-1/TM-48 text imported from the user's original Google Docs. Their layouts are rebuilt, not exact DOCX copies of those originals. Originals remain unchanged. A fresh database starts with categories; add templates through the library rather than importing old case data.
+- `/preview` uses fictional data and the same text merge component. It has no access to live case data and cannot save or generate documents anonymously.
 
 ## Ledger
 
@@ -24,9 +34,11 @@ Open `/login` to sign in with a Supabase staff account, then `/cases` to browse 
 
 ## Verification
 
-`npm run build` validates the production bundle and TypeScript. `node --test scripts/ledger.test.mjs` runs money/date checks (Node 24 supports the TypeScript source import).
+`npm run build` validates the production bundle and TypeScript. `node --test scripts/ledger.test.mjs scripts/mail-merge.test.mjs` runs money/date, placeholder, DOCX/XML, and image checks (Node 24 supports the TypeScript source imports).
 
 For live integration tests, run the app locally and execute `node scripts/verify-ledger.mjs`. This creates isolated temporary staff users and test records in the configured Supabase project and removes them in `finally`. It requires either `BRANDEX_TEST_SERVICE_KEY` in the local process environment or an authenticated Supabase CLI with project API-key access. Never put a service key in a `NEXT_PUBLIC_` variable. Set `BRANDEX_TEST_BASE_URL` to override the default `http://localhost:3000`.
+
+`node scripts/verify-mail-merge.mjs` uses the same setup to verify template/category writes, generation, private downloads, RLS, origin restrictions, snapshots, and archive behavior. It leaves a sample generated file under ignored `work/` for inspection and removes all remote test fixtures.
 
 The existing `npm run lint` script still uses the removed Next.js `next lint` command; it is not a passing verification command. ESLint configuration/tooling repair remains separate from this feature.
 

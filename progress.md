@@ -1,5 +1,17 @@
 # Brandex Suite Progress
 
+## 2026-10-15 — Phase 4 mail merge and Vercel deployment
+
+- Added Admin template editing/archiving, data-driven category creation, configurable origin eligibility, and case-page merge previews with core fields and required custom fields.
+- Added server-side editable A4 Word generation using pinned `docx` and `sharp`, including normalized case images, authoritative server field loading, private Storage, generation snapshots, retry IDs, case-scoped signed downloads, and cleanup if logging fails.
+- Tightened document generation/Storage writes to Admin-only in `20261015153344_phase4_mail_merge.sql`, matching the role contract. Fixed the app-owned updated-at helper's search path. Migration pushed; live schema lint passes.
+- Used the Google Drive skill/connection to read the original TM-1/TM-48 Google Docs referenced by the legacy mail-merge source. Imported text and mapped placeholders directly into the private live template library; no old case records were imported, no original document was modified, and no private template source was committed. Word layout is rebuilt rather than an exact copy of the originals.
+- Added `/preview` with fictional sample data, interactive merge text, and no anonymous data writes. Added private Admin invitation/recovery confirmation and password setup; user selected net2outlawzz@gmail.com. No setup token belongs in source or deployment configuration.
+- Created and linked Vercel projectsb/brandex-suite (`prj_B2NPOn7cwD0OsRolxte2PZKWQQLW`). Configured public Supabase URL/anon variables for Production/Preview. No service key deployed. `.vercelignore` excludes local credentials, historical assets, tests/work files, and Supabase CLI state.
+- Verification: production build/TypeScript and 3 merge/DOCX unit tests pass; 35 live mail-merge checks and 40 ledger regression checks pass. Browser checks verified template creation, additional-field preview, actual generation, persisted history, and no browser warnings/errors.
+- Generated DOCX/XML and embedded images were inspected. Pixel render attempt failed because LibreOffice is absent; original-template page fidelity is not claimed.
+- Existing lint-command repair and platform-created rls_auto_enable advisor warnings remain separate. Phase 5 dashboards are pending.
+
 ## 2026-10-15 — Handoff reconciliation and Phase 3 ledger
 
 - Read the supplied Build Spec, authoritative Claude advice/chat exports, actual source, GitHub repository metadata, and remote Git state. `main` matched `c353179` before this continuation. The advice file is actually `asset/Claude-Meger Advice`, without `.MD`.

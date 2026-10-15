@@ -53,13 +53,24 @@ Lives in the same database as cases, not standalone — payment status should al
 
 ## Continuation notes — 15 October 2026
 
-- Phases 1–3 are implemented. Continue with Phase 4 (mail merge/template library); do not rebuild the intake or import legacy test data.
+- Phases 1–4 are implemented. Continue with Phase 5 (role dashboards); do not rebuild intake/ledger/mail merge or import legacy test records.
 - `/login` uses existing Supabase password Auth. Staff accounts are provisioned outside the app; no public signup or permanent test users.
 - `/cases` is the ledger entry point; `/cases/[id]` displays core details, case status, paid/pending totals, and ledger entries. This is not the final role dashboard.
 - Ledger writes are Admin-only in both the API and existing RLS. Agents/Viewers get read-only case-scoped views. Never use a service-role client in app code.
 - A pending entry becomes paid by editing its status. Totals sum amounts per status; do not subtract paid entries from pending or invent invoice/refund/currency rules.
 - Amount validation matches numeric(12,2). Validate calendar dates and scope entry updates/deletes by both case and entry ID.
 - The intake cleanup migration allows Admin deletion of case-image objects while their case still exists. Remove objects before deleting a failed case; preserve and report the case ID if cleanup fails.
-- `docs/BUILD_SPEC.md` records confirmed decisions, current gaps, and prior security-advisor findings. Exact origin workflows and actual mail-merge output/templates are still pending.
+- `docs/BUILD_SPEC.md` records confirmed decisions, current gaps, and security-advisor findings. Exact origin stage transitions remain pending; template eligibility is Admin-configured data.
 - Keep `asset/` conversation/CSV reference files and existing unrelated package.json changes out of feature commits. Never publish local credentials or test-session state.
 - Update progress/instructions and commit/push completed modifications, per the explicit instruction in the local authoritative chat history.
+
+## Phase 4 and deployment notes
+
+- Word output is generated server-side using `docx`; `sharp` normalizes private intake images to embedded PNGs. Source templates are plain text with core fields, required `custom.field_name` fields, and a standalone `case_images` marker. Never evaluate template code or render raw template HTML.
+- Library writes and document generation are Admin-only, including RLS and Storage upload policies. Viewer reads all case documents; Agent reads assigned-case documents only. Do not re-enable Agent generation based on the superseded Phase 1 documents-insert policy.
+- Categories and `allowed_origins` remain database data. Imported templates default to all origins until Admin configures eligibility; do not infer statutory stage transitions.
+- Generated documents store a private bucket path in `generated_file_url`, plus a name and immutable generation snapshot. Short-lived signed downloads are created only after case-scoped RLS lookup. Archive templates rather than deleting referenced history.
+- Original TM-1/TM-48 text was read through the user's Drive connection and imported directly into the live database. The original files were not changed and their private content is not committed. Word page layout is rebuilt; the original formatting is not claimed preserved.
+- Vercel target: team `projectsb` (`team_yojHGKDK8OPASQSirQfdzT5J`), project `brandex-suite` (`prj_B2NPOn7cwD0OsRolxte2PZKWQQLW`), Node 24. Only public Supabase URL/anon config is required by the deployed app. No service-role key is deployed.
+- `.vercelignore` excludes credentials, history/assets, test scripts, local work, and Supabase CLI state. Keep all `.vercel` and generated setup tokens untracked.
+- The user selected `net2outlawzz@gmail.com` as the first Admin email. Private invitation/recovery links are single-use and must never be committed, published on a preview page, or consumed during agent testing. The user chooses their password.

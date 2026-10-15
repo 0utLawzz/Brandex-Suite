@@ -45,9 +45,9 @@ Storage buckets `case-images` and `documents` are private.
 | Phase 2: intake | Admin page and APIs, client search/create, origin toggle, image upload; live migration applied | Preserved; fixed form reset after await, image prevalidation, Admin image deletion policy and explicit cleanup failures; successful intake opens the new case |
 | Shared theme | Already implemented at `c353179`; README incorrectly claimed Phase 1 only | Reused throughout new pages |
 | Phase 3: ledger | Database table and RLS only; no case pages or ledger API/UI | Case list/detail, Admin entry CRUD, paid/pending summaries, read-only Viewer/assigned-Agent access |
-| Phase 4: mail merge | Schema/category seeds/buckets only | Pending: template library/editor, merge rendering, generated-file Storage/logging and protected downloads |
+| Phase 4: mail merge | Schema/category seeds/buckets only | Implemented: Admin library/editor, data-driven categories/origin eligibility, merge preview, custom fields, Word output with images, private Storage/logging and protected downloads |
 | Phase 5: role dashboards | Not implemented | Pending; case browsing is a minimal ledger entry point, not the final dashboard |
-| Vercel deployment | Target chosen; no deployment evidence in checkout | No Vercel deployment performed by this continuation |
+| Vercel deployment | Target chosen; no deployment evidence in checkout | Deployment now targets projectsb/brandex-suite; live release evidence is recorded in progress.md |
 
 ## Ledger behavior
 
@@ -62,23 +62,28 @@ and scopes every change to both case and entry ID. Database RLS remains active.
 
 ## Remaining boundaries and decisions
 
-- Origin is captured and displayed, but exact origin-to-stage transitions and
-  allowed document combinations are not specified or implemented. Do not invent
-  an IPO workflow from the origin labels alone. Existing defaults still use Filing/Ready.
+- Exact origin-to-stage transitions are still not specified. Document eligibility
+  now uses each template's Admin-configured allowed_origins. Do not invent an IPO
+  workflow from origin labels alone. Existing case defaults still use Filing/Ready.
 - `asset/TM-*.csv` are reference exports, not renderable mail-merge templates.
-  Actual document layouts, placeholders, output format, and origin eligibility
-  still need to be established in Phase 4.
-- No permanent staff account is provisioned by this continuation. Create staff
-  through Supabase Auth and explicitly promote the first Admin.
+  They are not imported as templates. The original TM-1/TM-48 Google Docs were
+  accessible through the user's Drive connection; their text was imported into
+  the live library with core/custom placeholder mapping. Original formatting is
+  not copied: output is a rebuilt editable A4 Word document. Descriptions record
+  this limitation and retain links to the unchanged originals.
+- The user selected net2outlawzz@gmail.com for the first Admin. Provision this
+  account through Supabase Auth with a private setup link; do not create a public
+  demo Admin, embed credentials, or send an unsolicited invitation email.
 - Core fields are read-only on later app pages; current database policy still
   gives Admin core-write access, as the full-access role requires.
 - `profiles` currently allows self/Admin reads rather than all-profile Viewer
   reads. The literal all-tables spec is not fully reflected there; revisit with
   staff administration, without broadening access as part of ledger work.
-- Document policies currently support reads and generation inserts, not full
-  Admin document update/delete. Complete this with Phase 4 lifecycle behavior.
-- Initial security-advisor warnings predate this continuation: mutable search
-  path on `public.touch_updated_at`, and public execute privileges on the
+- Phase 4 now gives Admin full document-row writes and private file insert/delete;
+  Agent/Viewer document writes are denied. App history is immutable, while
+  templates support editing and archival.
+- The app-owned `public.touch_updated_at` search path was fixed in Phase 4.
+  Remaining existing advisor warnings concern public execute privileges on the
   platform-created `public.rls_auto_enable` event-trigger function. They are
   recorded rather than silently changing unrelated platform objects.
 - The final advisor run also reported leaked-password protection disabled in
@@ -88,5 +93,11 @@ and scopes every change to both case and entry ID. Database RLS remains active.
   the recovery ID. Cross-service interruption/retry handling remains a future
   hardening concern.
 
-Next implementation phase: Phase 4, mail merge + template library. Complete
-the actual template/output contract before converting CSV reference rows into templates.
+Phase 4 validation: 35 live mail-merge checks and 40 ledger regression checks
+passed, alongside unit and production-build checks. Generated DOCX archives
+were inspected for merged XML and embedded images; pixel rendering could not
+run because LibreOffice is not installed in this Windows environment.
+
+Next implementation phase: Phase 5, role-specific dashboards. Exact statutory
+workflow rules and pixel-faithful imports of original document layouts remain
+separate follow-up work.

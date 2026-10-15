@@ -6,6 +6,9 @@ import { Navbar } from "@/components/ui/navbar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import LedgerPanel from "./ledger-panel";
+import MailMergePanel from "@/components/mail-merge-panel";
+import { caseValues, type GeneratedDocument } from "@/lib/mail-merge";
+import { loadTemplateLibrary } from "@/lib/template-data";
 
 export default async function CasePage({ params }: { params: Promise<{ id: string }> }) {
   const { supabase, role } = await requireStaff();
@@ -26,9 +29,17 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
     if (data.length < 500) break;
   }
   const totals = ledgerTotals(entries);
+  const { templates, categories } = await loadTemplateLibrary(supabase);
+  const documents: GeneratedDocument[] = [];
+  for (let offset = 0; ; offset += 500) {
+    const { data, error: documentsError } = await supabase.from("documents").select("id, template_name, file_name, generated_at").eq("case_id", id).order("generated_at", { ascending: false }).order("id").range(offset, offset + 499);
+    if (documentsError) throw new Error("Could not load documents.");
+    documents.push(...data); if (data.length < 500) break;
+  }
   return <><Navbar current="cases" /><main className="phase-page"><div className="page-top"><div><p className="eyebrow">BRANDEX SUITE / CASE</p><h1>{record.case_prefix}-{record.case_number}</h1><Badge tone="teal">{record.status}</Badge></div><Link className="nb-button" href="/cases">ALL CASES</Link></div>
     <Card><h2>{client.trading_as}</h2><p>{client.client_code} · {client.address}</p><p>Origin: {record.origin} · Stage: {record.stage} · Status: {record.status}</p>{record.assessment && <p>Assessment: {record.assessment}</p>}<p className="muted">Core client and case details are captured at intake.</p></Card>
     <div className="payment-summary"><Card><p className="eyebrow">PAID</p><strong>{formatAmount(totals.paid)}</strong></Card><Card><p className="eyebrow">PENDING</p><strong>{formatAmount(totals.pending)}</strong></Card><Card><p className="eyebrow">PAYMENT STATUS</p><strong>{!entries.length ? "No entries" : totals.pending > 0 ? "Pending" : "Paid"}</strong></Card></div>
     <Card><p className="section-label">CASE PAYMENTS</p><h2>Ledger</h2><LedgerPanel caseId={id} entries={entries} canWrite={role === "admin"} /></Card>
+    <Card className="module-card"><MailMergePanel caseId={id} values={caseValues(record, client)} categories={categories} templates={templates} documents={documents} canGenerate={role === "admin"} /></Card>
   </main></>;
 }

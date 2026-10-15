@@ -12,9 +12,11 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.58.0",
     "caniuse-lite": "1.0.30001816",
+    "docx": "9.11.0",
     "next": "^15.5.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "sharp": "0.34.5"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
