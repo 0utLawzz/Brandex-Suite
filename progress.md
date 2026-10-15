@@ -14,6 +14,9 @@
 - Deployment correction: the initial `supabase/` ignore rule also matched `lib/supabase/` in Vercel's Git build, removing app clients. Narrowed the rule to `supabase/.temp/`. Local template/integration tests were unaffected. The temporary invitation confirmation/password-setup session test also passed.
 - Production deployment `dpl_BejCEZsFWdS9pLSHmjvkN4RTAVLN` reached READY from commit `266b570` at https://brandex-suite.vercel.app. Live browser preview and merge interaction verified; HTTP checks returned 200 for root/preview/login and redirected unauthenticated cases to login. No deployment protection settings were disabled.
 - Reviewed and applied a sparse hosted Auth config: disabled public self-signup and changed site_url to the production domain; CLI confirmed all undeclared settings were left unchanged. Added the sparse deployment config and disabled signup in local config as well.
+- Verified Auth settings now report signup disabled. Provisioned the user-selected net2outlawzz@gmail.com account as the sole permanent Admin through a private single-use invite link; no invitation email was sent and the agent did not choose a password or consume the link.
+- Re-ran all 35 mail-merge integration checks against the production Vercel URL: real Word generation, Linux image rendering, private uploads/downloads, snapshots, eligibility, role denials, and archive behavior passed. Production test fixtures were removed; the two imported templates and the selected Admin remain.
+- Production release `a5d981f` (`dpl_D9hTHAiSF76zLPEpbdZUL7RVZPdK`) reached READY. Nested CLI metadata is ignored and absent from current tracked source; the earlier generated metadata contained only non-secret project/organization identifiers.
 
 ## 2026-10-15 — Handoff reconciliation and Phase 3 ledger
 

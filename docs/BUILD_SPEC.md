@@ -93,8 +93,9 @@ and scopes every change to both case and entry ID. Database RLS remains active.
   the recovery ID. Cross-service interruption/retry handling remains a future
   hardening concern.
 
-Phase 4 validation: 35 live mail-merge checks and 40 ledger regression checks
-passed, alongside unit and production-build checks. Generated DOCX archives
+Phase 4 validation: 35 live mail-merge checks passed both locally and on the
+Vercel production deployment, with 40 ledger regression checks, unit tests,
+and production-build checks. Generated DOCX archives
 were inspected for merged XML and embedded images; pixel rendering could not
 run because LibreOffice is not installed in this Windows environment.
 
