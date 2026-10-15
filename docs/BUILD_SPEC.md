@@ -46,7 +46,7 @@ Storage buckets `case-images` and `documents` are private.
 | Shared theme | Already implemented at `c353179`; README incorrectly claimed Phase 1 only | Reused throughout new pages |
 | Phase 3: ledger | Database table and RLS only; no case pages or ledger API/UI | Case list/detail, Admin entry CRUD, paid/pending summaries, read-only Viewer/assigned-Agent access |
 | Phase 4: mail merge | Schema/category seeds/buckets only | Implemented: Admin library/editor, data-driven categories/origin eligibility, merge preview, custom fields, Word output with images, private Storage/logging and protected downloads |
-| Phase 5: role dashboards | Not implemented | Pending; case browsing is a minimal ledger entry point, not the final dashboard |
+| Phase 5: role dashboards | Previously pending | Implemented: role-scoped dashboard, case/client search, origin/status/assignment filters, Admin assignments, Agent status/assessment controls |
 | Vercel deployment | Target chosen; no deployment evidence in checkout | Deployment now targets projectsb/brandex-suite; live release evidence is recorded in progress.md |
 
 ## Ledger behavior
@@ -99,6 +99,6 @@ and production-build checks. Generated DOCX archives
 were inspected for merged XML and embedded images; pixel rendering could not
 run because LibreOffice is not installed in this Windows environment.
 
-Next implementation phase: Phase 5, role-specific dashboards. Exact statutory
+Phases 1–5 are implemented. Role dashboards use session-bound RLS for case, payment, and document totals. Admin can assign/reassign/unassign cases; Agents can edit only status and assessment on assigned cases. Mutations reject stale versions. Agent core fields are protected by a database whitelist, including IDs and timestamps; demoted Viewers cannot retain writes through an old assignment. Staff email labels are copied from Auth and visible through existing self/Admin profile policies. Exact statutory
 workflow rules and pixel-faithful imports of original document layouts remain
 separate follow-up work.

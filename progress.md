@@ -1,3 +1,13 @@
+## 2026-10-16 — Phase 5 role workspaces
+
+- Added role-specific `/dashboard` with RLS-scoped cases, paid/pending totals, document counts, status breakdown, recent cases, and Admin assignment queues/workloads.
+- Added case/client search, origin/status/assignment filters, per-case payment totals, and pagination. Agent navigation is scoped to My Cases; Viewer has read-only screens.
+- Added Admin assignment/reassignment/unassignment and Admin/assigned-Agent status/assessment forms. APIs validate current roles and stale `updated_at` versions. No core-field or stage editing added.
+- Applied `20261015231711_phase5_role_dashboards.sql`: synced staff email labels, tightened case update policy for role demotion, indexed assignments, and replaced Agent core guard with an allowlist protecting all other columns.
+- Database lint: no schema errors. Security advisor reports only the previously recorded platform function and leaked-password-protection notices; no new app finding.
+- Local validation: 34 live Phase 5 checks passed with real Auth sessions and direct Data API denial tests; 6 existing unit tests passed. Browser confirmed sign-in routes to dashboard and status/assessment persists after save. All generated test data is removed after verification.
+- Exact statutory stage transitions and original-template page fidelity remain follow-up decisions; they are not claimed implemented by Phase 5.
+
 # Brandex Suite Progress
 
 ## 2026-10-15 â€” Phase 4 mail merge and Vercel deployment

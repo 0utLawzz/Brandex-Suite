@@ -11,7 +11,7 @@ export default function PasswordForm() {
     event.preventDefault(); const data = new FormData(event.currentTarget);
     const password = String(data.get("password")); if (password !== data.get("confirm")) { setError("Passwords do not match."); return; }
     setBusy(true); setError("");
-    try { const { error: failure } = await createClient().auth.updateUser({ password }); if (failure) throw failure; router.replace("/cases"); router.refresh(); }
+    try { const { error: failure } = await createClient().auth.updateUser({ password }); if (failure) throw failure; router.replace("/dashboard"); router.refresh(); }
     catch { setError("Could not save the password. Use at least 12 characters and try again, or request a fresh setup link."); }
     finally { setBusy(false); }
   }

@@ -18,7 +18,7 @@ export default async function IntakePage() {
     .maybeSingle();
 
   if (profile?.role !== "admin") {
-    return (<><Navbar current="intake" /><main className="phase-page">
+    return (<><Navbar current="intake" role={profile?.role === "admin" ? "admin" : profile?.role === "agent" ? "agent" : "viewer"} /><main className="phase-page">
         <Badge tone="accent">ADMIN ONLY</Badge>
         <p className="eyebrow">Brandex Suite / Case intake</p>
         <h1>Admin access required</h1>
@@ -27,5 +27,5 @@ export default async function IntakePage() {
       </main></>);
   }
 
-  return <><Navbar current="intake" /><IntakeForm /></>;
+  return <><Navbar current="intake" role={profile?.role === "admin" ? "admin" : profile?.role === "agent" ? "agent" : "viewer"} /><IntakeForm /></>;
 }

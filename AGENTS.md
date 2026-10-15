@@ -55,7 +55,7 @@ Lives in the same database as cases, not standalone — payment status should al
 
 - Phases 1–4 are implemented. Continue with Phase 5 (role dashboards); do not rebuild intake/ledger/mail merge or import legacy test records.
 - `/login` uses existing Supabase password Auth. Staff accounts are provisioned outside the app; no public signup or permanent test users.
-- `/cases` is the ledger entry point; `/cases/[id]` displays core details, case status, paid/pending totals, and ledger entries. This is not the final role dashboard.
+- `/cases` is the ledger entry point; `/cases/[id]` displays core details, case status, paid/pending totals, and ledger entries. `/dashboard` is the role-specific landing page after sign-in.
 - Ledger writes are Admin-only in both the API and existing RLS. Agents/Viewers get read-only case-scoped views. Never use a service-role client in app code.
 - A pending entry becomes paid by editing its status. Totals sum amounts per status; do not subtract paid entries from pending or invent invoice/refund/currency rules.
 - Amount validation matches numeric(12,2). Validate calendar dates and scope entry updates/deletes by both case and entry ID.
@@ -75,3 +75,11 @@ Lives in the same database as cases, not standalone — payment status should al
 - `.vercelignore` excludes credentials, history/assets, test scripts, local work, and Supabase CLI state. Keep all `.vercel` and generated setup tokens untracked.
 - The user selected `net2outlawzz@gmail.com` as the first Admin email. Private invitation/recovery links are single-use and must never be committed, published on a preview page, or consumed during agent testing. The user chooses their password.
 - Hosted Auth must stay invitation-only (`enable_signup = false`), including the direct Supabase signup API; hiding signup UI alone is insufficient. `deployment/supabase/config.toml` is the sparse hosted config. Diff it before pushing, leaving undeclared project settings unchanged.
+
+## Phase 5 notes � 16 October 2026
+
+- `/dashboard` and `/cases` fetch session-scoped data through RLS; Agents see assigned cases and matching payment/document totals only. Reads paginate past the Data API limit.
+- Admin assigns, reassigns, and unassigns from case detail. Agent targets must have the current Agent role. Account email labels are synced from Auth into profiles; do not widen roster access beyond Admin.
+- Admin and assigned Agents edit status/assessment. Core data and stage remain read-only here; no statutory stage rules have been invented. Viewer has no write controls.
+- Assignment/workflow APIs require `expected_updated_at` and return 409 for stale edits. Keep both API authorization and direct-Data-API RLS/trigger protections.
+- `scripts/verify-phase5.mjs` uses temporary real Auth sessions to test dashboards, filters, assignments, role demotion, stale edits, and protected core columns. Cleanup is scoped to exact generated IDs.

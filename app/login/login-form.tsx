@@ -22,7 +22,7 @@ export default function LoginForm() {
         await supabase.auth.signOut();
         throw new Error("Your staff profile is unavailable. Contact the administrator.");
       }
-      router.replace("/cases"); router.refresh();
+      router.replace("/dashboard"); router.refresh();
     } catch (failure) { setError(failure instanceof Error ? failure.message : "Unable to sign in. Try again."); }
     finally { setBusy(false); }
   }

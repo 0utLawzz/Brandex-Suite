@@ -12,7 +12,15 @@ Phases 1–4 are implemented: database/Auth/RLS, Admin case intake, per-case led
 4. Create users through Supabase Auth. The signup trigger creates a `public.profiles` row with the safe default role `viewer`.
 5. Promote the first admin from the Supabase SQL editor using a narrowly scoped query such as `update public.profiles set role = 'admin' where id = '<exact-user-uuid>';`.
 
-Open `/preview` for a fictional sample workspace or `/login` to sign in with a Supabase staff account. `/cases` shows accessible cases and their ledgers/documents. Admins create cases at `/intake` and manage templates at `/templates`. There is no public signup. Staff provisioning is an explicit administration operation; the selected first Admin receives a private setup link and chooses their own password.
+Open `/preview` for a fictional sample workspace or `/login` to sign in with a Supabase staff account. `/dashboard` opens the role-specific overview after login. `/cases` shows accessible cases and their ledgers/documents. Admins create cases at `/intake` and manage templates at `/templates`. There is no public signup. Staff provisioning is an explicit administration operation; the selected first Admin receives a private setup link and chooses their own password.
+
+## Role workspaces
+
+- Admin dashboard shows all cases, payments, document totals, unassigned queue, and Agent workloads. Assign/reassign/unassign from case detail.
+- Agents see only assigned cases and can save status/assessment. Viewer reads all cases without write controls.
+- Case search covers case code, client code, and trading name; filters cover origin/status and Admin assignments.
+- Concurrent edits are rejected with a reload prompt rather than silently overwriting newer changes.
+- `node scripts/verify-phase5.mjs` tests role dashboards, filters, assignments, stale edits, direct API restrictions, and role demotion using isolated temporary users.
 
 ## Templates and mail merge
 
