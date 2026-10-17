@@ -15,3 +15,14 @@
 Production browser Admin/Viewer checks completed: 23 hosted checks passed in total. Browser screenshots visually inspected; test fixtures cleaned, seven original public tables verified unchanged. A text-encoding-only page correction was rebuilt afterward.
 
 - Final text-encoding-only rebuild READY: `dpl_H2DtADfuJ4JEcgBGW533EEa2n9v6` (`https://brandex-suite-63enj4onb-projectsb.vercel.app`), aliased to production; same upload behavior verified by the preceding 23-check browser/API run.
+
+## 17 October 2026 - Owner-approved root restriction
+
+- Explicit owner choice: restrict existing X/A roots.
+- Removed direct `anyoneWithLink` writer grants from the two verified roots only.
+- Re-read permissions: no public/domain grants on either root; three named user/group permissions per root exactly preserved.
+- Before/after evidence saved privately. No renaming, moving, content deletion or other sharing changes.
+- No frontend/database/function redeployment needed for Drive permission changes.
+
+- Post-restriction actual app uploads verified under both original X/A roots; uploaded files had no public/domain grants. Test folders trashed and temporary rows/login removed; original seven public tables unchanged.
+- Improved Edge Function failure messages/logs with operation category and HTTP status only (no token, path, filename or private response contents). A initially failed 502; subsequent upload passed after diagnostic redeploy. Root cause not asserted.

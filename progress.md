@@ -1,3 +1,7 @@
+## 17 October 2026 - Existing Drive roots restricted and verified
+
+Owner approved restricting original X/A roots. Removed public writer links only; three named staff grants on each root unchanged. Actual app uploads to both original roots passed and files were nonpublic. Temporary test data cleaned; seven original public tables verified unchanged. A initial 502 resolved on a later diagnostic redeploy/test; cause not asserted. Process/handoff/changelog updated. Existing child-item direct grants were not broadly changed.
+
 ## 17 October 2026 - Suite Drive port
 
 Owner confirmed Suite target `xogbpsnsmephupbqsfgb`. Four server settings saved; additive migration and upload function deployed. 18 isolated hosted API checks passed; fixtures cleaned. Existing X root public-sharing inheritance is now blocked; owner privacy choice pending. Case upload/history panel implemented; exact frontend/browser release evidence tracked in `PROCESS.MD` and `CHANGELOG.md`. No mature CMS schema copied or existing business data reset.

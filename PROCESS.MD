@@ -25,20 +25,24 @@ Updated 17 October 2026 (Asia/Karachi).
 - [x] API test records/users removed; only test folders trashed. Original business files unchanged.
 - [x] TypeScript/Next production build and six existing unit checks passed; Deno function type check passed after null guard fix.
 
-## Root destination decision pending
+## Root privacy - owner approved and applied 17 October
 
-X = `1 ALL CLIENTS`, folder `18T0MojE1IiT7uIz9P8Sthlamj8icR8X6`.
-A = `2 CONSULTANTS`, folder `1Ke_B9vI_DdiiXPTTCBDtS4Ny6l73kIBU`.
+Owner explicitly chose Restricted existing X/A roots. Removed only the `anyoneWithLink` writer permission on these two exact roots:
 
-Real test found inherited public access from X. App now rejects public/domain-shared destinations before upload. Do not call X operational for private uploads until owner chooses Restricted existing roots or new private upload roots. Do not infer A sharing from the X finding. Staff also need appropriate Google account folder access; app Viewer permission does not grant Google access automatically.
+- X: `1 ALL CLIENTS`, `18T0MojE1IiT7uIz9P8Sthlamj8icR8X6`.
+- A: `2 CONSULTANTS`, `1Ke_B9vI_DdiiXPTTCBDtS4Ny6l73kIBU`.
+
+Fresh permission lists contain no anyone/domain grants. All three named user/group permissions per root retain identical IDs, types and roles. Before/after permission evidence is private outside source. No other folder's permissions were modified. Existing child items with separately granted public access were not broadly scanned or changed; the upload function still checks destination folders and rejects public/domain sharing.
+
+App Viewer role does not grant Google access automatically; intended staff need their named Google permission.
 
 ## Next checks
 
 - [x] Vercel production READY: `dpl_H2DtADfuJ4JEcgBGW533EEa2n9v6`, aliased to Suite.
 - [x] Production browser Admin upload/history, Viewer history/no-upload controls and no uncaught JS errors verified. Total: 23 hosted API/browser checks. Screenshots are private local test evidence under `work/drive-verification`.
 - [x] After fixture cleanup, all seven original public tables exactly match the private pre-change row export.
-- [ ] Owner selects root privacy approach; verify permissions and map final destinations.
-- [ ] Verify X/A uploads in final approved destinations after privacy setup.
+- [x] Owner approved Restricted existing roots; both root permission lists verified, named staff access preserved.
+- [x] Real app uploads under both original X/A roots succeeded after restriction; each uploaded file had no public/domain permission. Only test folders trashed and fixtures removed.
 - [ ] Confirm OAuth publishing/refresh-token expiry behavior; Testing consent may require renewal.
 - [ ] Review wider roadmap as separate work: dedicated case identity fields, billing/workflow integration and mature feature parity. Never silently copy CMS migrations into Suite.
 
@@ -55,3 +59,5 @@ Update this checklist, `CHANGELOG.md`, current agent notes and connection status
 17 October CLI security advisor reports intentional authenticated SECURITY DEFINER warnings for the two upload-lease RPCs. Their strict Admin profile guards, empty search_path and revoked anonymous/public execution were reviewed; Viewer denial was exercised. Existing `rls_auto_enable` execution warnings and disabled Auth leaked-password protection remain wider-project findings, not resolved by this upload change. No all-clear security claim.
 
 References: https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable and https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection.
+
+17 October follow-through: A initially returned generic Drive 502 despite valid named write capability. Added non-sensitive operation/status diagnostics to the Edge Function and redeployed; a subsequent actual A upload succeeded. Cause of the initial failure is not established; no public sharing restored. X actual upload also passed. Seven original public tables match the pre-change export after cleanup.

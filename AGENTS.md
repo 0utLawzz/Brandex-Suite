@@ -99,7 +99,7 @@ Lives in the same database as cases, not standalone — payment status should al
 
 - Drive uploads are Admin-only. Viewer can read file history. Legacy Agent authorization elsewhere in Suite has not been removed by this bounded change; Agents have no new Drive access.
 
-- X/A existing roots are seeded, but the X root inherits public sharing. Private destination validation rejects anyone/domain access. Owner choice on restricting existing roots vs new private roots is pending. Never remove existing sharing without authorization.
+- X/A existing roots are seeded. On 17 October owner explicitly authorized restricting these exact roots: public writer links removed, three named staff grants per root preserved. Private destination validation continues to reject anyone/domain access. Other sharing changes need separate authorization.
 
 - Files upload directly to Edge Function (up to 20 MB); no Next.js proxy body-limit workaround. Use per-client leases, SHA-256 and stable upload ID for retries; immutable history and folder bindings.
 
@@ -107,4 +107,4 @@ Lives in the same database as cases, not standalone — payment status should al
 
 - Hosted API verification passed 18 checks against isolated fixtures/private test root; fixture records/users removed and test Drive folders trashed. Browser/deployment evidence is recorded separately.
 
-- Final hosted verification: 23 API/browser checks, including Admin upload and Viewer history/no upload controls; seven original public tables match pre-change export after fixture cleanup. Deployment identifiers and root privacy blocker are in PROCESS.MD.
+- Final hosted verification: 23 API/browser checks, including Admin upload and Viewer history/no upload controls; seven original public tables match pre-change export after fixture cleanup. Deployment identifiers and completed root privacy verification are in PROCESS.MD.

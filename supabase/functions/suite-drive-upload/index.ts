@@ -194,11 +194,11 @@ Deno.serve(async (req) => {
           ...init.headers,
         },
       });
-      if (!res.ok)
-        throw new SafeError(
-          "Google Drive access failed. Check account/folder access and retry.",
-          502,
-        );
+      if (!res.ok) {
+        const operation = path.includes("/permissions") ? "permission check" : init.method === "POST" ? "folder creation" : path.startsWith("files?") ? "folder search" : "folder check";
+        console.error("Drive operation failed", { operation, status: res.status });
+        throw new SafeError(`Google Drive ${operation} failed (${res.status}). Check folder access and retry.`,502);
+      }
       return await res.json();
     }
     async function assertPrivate(id: string) {

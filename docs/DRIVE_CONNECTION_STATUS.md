@@ -15,7 +15,7 @@ Updated 17 October 2026. Latest owner-confirmed target: Brandex-Suite `xogbpsnsm
 
 18 hosted API checks passed on an isolated private test root, including real upload/retrieval, private permission check, repeat retry/no duplicate, mismatch rejection, folder reuse and Viewer/Agent/origin denial. Temporary test rows/users removed; only generated test folders trashed. Production browser verification is recorded in PROCESS.MD when completed.
 
-The existing X root (`1 ALL CLIENTS`, `18T0MojE1IiT7uIz9P8Sthlamj8icR8X6`) inherits public sharing. Upload now fails closed for anyone/domain destinations before writing a file. Existing permissions were NOT changed. Owner choice pending: restrict existing roots or choose new private roots. A root (`2 CONSULTANTS`, `1Ke_B9vI_DdiiXPTTCBDtS4Ny6l73kIBU`) is seeded; do not infer its sharing from the X finding. Google staff access is separate from app roles.
+Owner chose Restricted existing X/A roots on 17 October. Removed public writer links on X (`1 ALL CLIENTS`, `18T0MojE1IiT7uIz9P8Sthlamj8icR8X6`) and A (`2 CONSULTANTS`, `1Ke_B9vI_DdiiXPTTCBDtS4Ny6l73kIBU`). Fresh root permissions have no anyone/domain grants and all three named grants per root remain unchanged. No other permissions changed. Upload continues to reject independently public/domain destinations. Google staff access is separate from app roles.
 
 Suite lacks dedicated TM/mark/class fields. Folder labels are entered at first upload, or a verified existing folder ID is used. No automatic TM folder rename, full CMS port or financial/workflow parity claim.
 
@@ -26,3 +26,6 @@ OAuth consent publishing/token lifetime still needs confirmation. Read PROCESS.M
 Earlier attempted CMS secrets upload failed HTTP 403. That was the wrong target; no successful new release was made there. The correct Suite CLI account is available and its server settings are verified. Mature CMS candidate remains separately preserved reference work.
 
 Production browser Admin/Viewer checks completed: 23 hosted checks passed in total. Browser screenshots visually inspected; test fixtures cleaned, seven original public tables verified unchanged. A text-encoding-only page correction was rebuilt afterward.
+
+- Post-restriction actual app uploads verified under both original X/A roots; uploaded files had no public/domain grants. Test folders trashed and temporary rows/login removed; original seven public tables unchanged.
+- Improved Edge Function failure messages/logs with operation category and HTTP status only (no token, path, filename or private response contents). A initially failed 502; subsequent upload passed after diagnostic redeploy. Root cause not asserted.
