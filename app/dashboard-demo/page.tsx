@@ -130,7 +130,7 @@ export default function Demo() {
     <div className="bx-demo">
       <header className="bx-nav">
         <a href="/dashboard-demo" className="bx-logo">
-          <img src="/brand/brandex-wordmark.png" alt="Brandex" />
+          <img src="/brand/brandex-wordmark-navbar.png" alt="Brandex" />
           <small>SUITE</small>
         </a>
         <nav aria-label="Demo navigation">

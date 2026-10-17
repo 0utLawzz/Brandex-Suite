@@ -15,7 +15,7 @@
   --font-mono: "Polymnia Framed", Arial, sans-serif;
   background: var(--bg);
   color: var(--black);
-  font: 400 15px/1.5 var(--font-body);
+  font: 400 18px/1.5 var(--font-body);
   text-transform: uppercase;
   min-height: 100vh;
 }
@@ -31,15 +31,15 @@
   margin: 0;
 }
 .bx-demo h1 {
-  font-size: 76px;
+  font-size: 91px;
   line-height: 1.03;
 }
 .bx-demo h2 {
-  font-size: 32px;
+  font-size: 38px;
   line-height: 1.15;
 }
 .bx-demo h3 {
-  font-size: 26px;
+  font-size: 31px;
 }
 .bx-demo button,
 .bx-demo a,
@@ -77,14 +77,14 @@
 }
 .bx-logo img {
   display: block;
-  width: 126px;
-  height: 36px;
+  width: 162px;
+  height: 48px;
   object-fit: contain;
   object-position: left center;
 }
 .bx-logo small {
   color: #fff;
-  font: 500 12px var(--font-mono);
+  font: 500 14px var(--font-mono);
   margin-left: 10px;
 }
 .bx-nav nav {
@@ -99,7 +99,7 @@
   background: none;
   color: #888;
   padding: 0 18px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   position: relative;
   transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
@@ -317,12 +317,12 @@
   border-block: 3px solid var(--black);
 }
 .bx-tabs button {
-  padding: 13px 20px;
+  padding: 16px 23px;
   background: none;
   border: 0;
   border-right: 1.5px solid #ddd4ba;
   border-bottom: 4px solid transparent;
-  font: 11px var(--font-mono);
+  font: 13px var(--font-mono);
   text-transform: uppercase;
   color: rgba(12, 12, 12, 0.55);
 }
@@ -347,7 +347,7 @@
 }
 .bx-demo th {
   background: var(--bg-alt);
-  font: 10px var(--font-mono);
+  font: 12px var(--font-mono);
   letter-spacing: 0.5px;
   padding: 12px 18px;
   border-bottom: 2px solid var(--black);
@@ -355,22 +355,22 @@
 .bx-demo td {
   padding: 17px 18px;
   border-bottom: 2px solid var(--black);
-  font-size: 12px;
+  font-size: 15px;
 }
 .bx-demo td:first-child strong,
 .bx-demo td small {
   display: block;
 }
 .bx-demo td:first-child strong {
-  font-size: 14px;
+  font-size: 17px;
   margin: 5px 0 2px;
 }
 .bx-demo td small {
-  font: 9px var(--font-mono);
+  font: 11px var(--font-mono);
   letter-spacing: 1px;
 }
 .bx-case-link {
-  font: 11px var(--font-mono) !important;
+  font: 13px var(--font-mono) !important;
   color: var(--accent) !important;
   background: none;
   border: 0;
@@ -384,7 +384,7 @@
   color: var(--teal);
   background: rgba(13, 153, 112, 0.12);
   padding: 5px 7px;
-  font: 9px var(--font-mono);
+  font: 11px var(--font-mono);
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -398,7 +398,7 @@
   background: var(--bg);
   border: 2px solid var(--black);
   padding: 6px 8px;
-  font: 10px var(--font-mono) !important;
+  font: 12px var(--font-mono) !important;
 }
 .bx-open:hover {
   background: var(--yellow);
@@ -411,7 +411,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 16px 20px;
-  font: 9px var(--font-mono);
+  font: 11px var(--font-mono);
   background: var(--bg);
 }
 .bx-side {
@@ -431,7 +431,7 @@
   margin-bottom: 14px;
 }
 .bx-count {
-  font: 12px var(--font-mono);
+  font: 14px var(--font-mono);
   border: 2px solid var(--black);
   background: var(--yellow);
   padding: 5px 8px;
