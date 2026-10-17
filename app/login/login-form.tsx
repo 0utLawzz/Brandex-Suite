@@ -18,7 +18,7 @@ export default function LoginForm() {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({ email: String(form.get("email")).trim(), password: String(form.get("password")) });
       if (signInError || !data.user) throw new Error("Sign-in failed. Check your email and password.");
       const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).maybeSingle();
-      if (!profile || !["admin", "viewer", "agent"].includes(profile.role)) {
+      if (!profile || !["admin", "viewer"].includes(profile.role)) {
         await supabase.auth.signOut();
         throw new Error("Your staff profile is unavailable. Contact the administrator.");
       }

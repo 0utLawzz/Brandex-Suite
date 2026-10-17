@@ -65,6 +65,140 @@ Deno.serve(async (req) => {
     const form = await req.formData(),
       caseId = String(form.get("case_id") ?? ""),
       uploadId = String(form.get("upload_id") ?? "");
+    if (form.get("action") === "sync") {
+      if (!uuid.test(caseId)) return reply({ error: "Invalid case" }, 400);
+      const { data: record, error: recordError } = await sb
+        .from("cases")
+        .select(
+          "id,client_id,case_number,application_name,tm_number,nice_class,updated_at",
+        )
+        .eq("id", caseId)
+        .maybeSingle();
+      if (recordError || !record)
+        throw new SafeError("Could not load case", 404);
+      clientId = record.client_id;
+      const { data: clientBinding } = await sb
+        .from("drive_clients")
+        .select("series,folder_id")
+        .eq("client_id", clientId)
+        .maybeSingle();
+      const { data: caseBinding } = await sb
+        .from("drive_cases")
+        .select("folder_id")
+        .eq("case_id", caseId)
+        .maybeSingle();
+      if (!clientBinding || !caseBinding)
+        return reply({ error: "No case folder yet", code: "NO_FOLDER" }, 409);
+      const { data: root } = await sb
+        .from("drive_series")
+        .select("root_folder_id")
+        .eq("code", clientBinding.series)
+        .single();
+      const { data: client } = await sb
+        .from("clients")
+        .select("client_code")
+        .eq("id", clientId)
+        .single();
+      if (!root || !client) throw new SafeError("Drive mapping needs review");
+      const lease = await sb.rpc("claim_suite_drive", {
+        p_client: clientId,
+        p_operation: operation,
+      });
+      if (lease.error || !lease.data)
+        throw new SafeError(
+          "Another folder operation is active. Retry shortly.",
+        );
+      claimed = true;
+      const googleId = Deno.env.get("GOOGLE_CLIENT_ID"),
+        secret = Deno.env.get("GOOGLE_CLIENT_SECRET"),
+        refresh = Deno.env.get("GOOGLE_REFRESH_TOKEN");
+      if (!googleId || !secret || !refresh)
+        throw new SafeError("Drive server connection is not configured", 503);
+      const response = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        signal: AbortSignal.timeout(30000),
+        body: new URLSearchParams({
+          client_id: googleId,
+          client_secret: secret,
+          refresh_token: refresh,
+          grant_type: "refresh_token",
+        }),
+      });
+      const token = await response.json();
+      if (!response.ok || !token.access_token)
+        throw new SafeError("Google authorization needs renewal", 503);
+      async function google(path: string, init: RequestInit = {}) {
+        const r = await fetch("https://www.googleapis.com/drive/v3/" + path, {
+          ...init,
+          signal: AbortSignal.timeout(30000),
+          headers: {
+            Authorization: `Bearer ${token.access_token}`,
+            ...init.headers,
+          },
+        });
+        if (!r.ok)
+          throw new SafeError(
+            "Could not verify or rename Drive folder. Check access and retry.",
+            502,
+          );
+        return await r.json();
+      }
+      for (const id of [
+        root.root_folder_id,
+        clientBinding.folder_id,
+        caseBinding.folder_id,
+      ]) {
+        const permissions = await google(
+          `files/${encodeURIComponent(id)}/permissions?fields=permissions(type),nextPageToken&pageSize=100`,
+        );
+        if (
+          permissions.nextPageToken ||
+          permissions.permissions.some(
+            (p: { type: string }) => p.type === "anyone" || p.type === "domain",
+          )
+        )
+          throw new SafeError("Destination must remain Restricted");
+      }
+      const parent = await google(
+        `files/${encodeURIComponent(clientBinding.folder_id)}?fields=id,parents,mimeType,trashed`,
+      );
+      const folder = await google(
+        `files/${encodeURIComponent(caseBinding.folder_id)}?fields=id,parents,mimeType,trashed`,
+      );
+      if (
+        parent.trashed ||
+        folder.trashed ||
+        parent.mimeType !== "application/vnd.google-apps.folder" ||
+        folder.mimeType !== "application/vnd.google-apps.folder" ||
+        !parent.parents?.includes(root.root_folder_id) ||
+        !folder.parents?.includes(parent.id)
+      )
+        throw new SafeError("Folder relationship needs reconciliation");
+      const name =
+        `${client.client_code}-${record.case_number} ${record.application_name.slice(0, 140)}${record.tm_number ? " " + record.tm_number : ""}${record.nice_class ? " C" + record.nice_class : ""}`
+          .trim()
+          .slice(0, 200);
+      await google(
+        `files/${encodeURIComponent(caseBinding.folder_id)}?fields=id`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name }),
+        },
+      );
+      const saved = await sb
+        .from("cases")
+        .update({ drive_sync_pending: false })
+        .eq("id", caseId)
+        .eq("updated_at", record.updated_at)
+        .select("id")
+        .maybeSingle();
+      if (saved.error || !saved.data)
+        throw new SafeError(
+          "Case changed during folder rename. Reload and retry.",
+        );
+      return reply({ folder_id: caseBinding.folder_id, synced: true, name });
+    }
     const file = form.get("file");
     if (
       !uuid.test(caseId) ||
@@ -195,9 +329,21 @@ Deno.serve(async (req) => {
         },
       });
       if (!res.ok) {
-        const operation = path.includes("/permissions") ? "permission check" : init.method === "POST" ? "folder creation" : path.startsWith("files?") ? "folder search" : "folder check";
-        console.error("Drive operation failed", { operation, status: res.status });
-        throw new SafeError(`Google Drive ${operation} failed (${res.status}). Check folder access and retry.`,502);
+        const operation = path.includes("/permissions")
+          ? "permission check"
+          : init.method === "POST"
+            ? "folder creation"
+            : path.startsWith("files?")
+              ? "folder search"
+              : "folder check";
+        console.error("Drive operation failed", {
+          operation,
+          status: res.status,
+        });
+        throw new SafeError(
+          `Google Drive ${operation} failed (${res.status}). Check folder access and retry.`,
+          502,
+        );
       }
       return await res.json();
     }
@@ -343,18 +489,16 @@ Deno.serve(async (req) => {
         throw new SafeError("Upload interrupted; retry the same file", 502);
       fileId = (await uploaded.json()).id;
     }
-    const { error: saveError } = await sb
-      .from("drive_files")
-      .insert({
-        upload_id: uploadId,
-        case_id: caseId,
-        file_id: fileId,
-        file_name: name,
-        mime_type: file.type,
-        byte_size: file.size,
-        sha256: hash,
-        uploaded_by: user.id,
-      });
+    const { error: saveError } = await sb.from("drive_files").insert({
+      upload_id: uploadId,
+      case_id: caseId,
+      file_id: fileId,
+      file_name: name,
+      mime_type: file.type,
+      byte_size: file.size,
+      sha256: hash,
+      uploaded_by: user.id,
+    });
     must(saveError);
     return reply({ file_id: fileId, folder_id: caseFolder });
   } catch (e) {

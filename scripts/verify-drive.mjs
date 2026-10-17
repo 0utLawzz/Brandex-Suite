@@ -1,3 +1,5 @@
+// Historical verification for the pre-operations schema; preserved for reference.
+throw new Error("Superseded: use verify-operations-db.mjs, verify-operations-live.mjs and verify-drive-identity.mjs. This historical script must not create legacy Agent fixtures in the current schema.");
 // Hosted integration test. Creates only isolated fixtures; never logs credentials.
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";

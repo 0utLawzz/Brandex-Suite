@@ -70,3 +70,36 @@ Owner confirmed Suite target `xogbpsnsmephupbqsfgb`. Four server settings saved;
 - Added reusable `Button`, `Card`, `Panel`, `Input`, `Tabs`, `Badge`, and always-dark `Navbar` primitives in `components/ui/`.
 - Applied the primitives to the Phase 1 landing page and Phase 2 Admin case intake page.
 - Schema, RLS, Supabase routes, image storage behavior, and workflow logic were not changed.
+
+
+## 17 October 2026 — Suite operations release
+
+The current target is **Brandex Suite**, Supabase `xogbpsnsmephupbqsfgb`, Vercel team `projectsb`. Earlier mature CMS candidate location below is historical and must not be used for Suite migrations.
+
+- Visible Intake renamed **Case Registration / New Case** at `/new-case`; old `/intake` redirects.
+- Native client/case/TM identity, configurable series, default Monthly Billing, explicit Advance full-allocation gate, preset stage charges, receiving allocations, stable case receipts, edit/void audit.
+- Staff-driven stage events and calendar flags; Accepted creates Stage 3 charge; STOPPED pauses flags; TM-57 reactivation separate charge. Certificate office receipt and delivery tracking are separate.
+- Service Associate contact/payee (no login), assignment liability and partial FIFO settlements. Staff roles Admin + Viewer; historical Agent accounts become Viewer, retained.
+- Original legacy ledger stays read-only and excluded from new financial totals. Existing records require identity/workflow review; no guessed backfill.
+- Migration `20261017152217_suite_case_accounts_workflow.sql` applied to Suite; updated `suite-drive-upload` deployed for same-folder identity sync. Production `dpl_9wUq3fKsAzu8HQxdJ5h1B9UPSmKa` READY at https://brandex-suite.vercel.app.
+- Verified locally: production build, TypeScript, Deno, six unit checks and 45 Postgres operation checks. Hosted acceptance is complete: 24 operation + 7 Drive identity + 9 browser writes + 35 document-generation checks; see `PROCESS.MD`.
+- Private recovery export of 11 existing public tables saved before migration; not a full Auth/Storage backup. Original live data preserved.
+
+Still pending: legacy Ledger/Sheets reconciliation/import; full mature registry/journal/export parity; objection resolution return path; paid associate reassignment rules; renewal automation; long-term OAuth expiry review. These are not claimed complete by this release.
+
+
+### Release acceptance — 17 October 2026
+
+- [x] Complete ordered Suite migrations: **45 local Postgres checks**, including reference-length correction, monetary transactions, flags/calendar boundaries, STOPPED/TM-57, delivery and permissions.
+- [x] **24 hosted API/browser operation checks**: actual registration, multi-case allocations/receipt revisions, Viewer denials, Accepted charge, partial associate settlement, void without workflow rollback and all operational pages.
+- [x] **7 hosted Drive identity checks**: actual browser PDF upload under Restricted X, private file, same-folder TM rename, unchanged file/parent, no duplicate charge and Viewer denial.
+- [x] **9 browser write-flow checks**: Case Registration redirect/form, new client/rates, unpaid Advance gate, allocation/unallocated advance, receipt print/PDF, paid filing, persisted event and mobile containment.
+- [x] **35 document-generation regression checks** with current Admin/Viewer roles. Private downloads, image embedding, retries, origin restrictions and historical snapshots preserved.
+- [x] Production build/TypeScript, Deno Edge Function check and six existing unit checks passed. Receipt rendered as a legible one-page PDF; case/receipt visuals inspected.
+- [x] Temporary operation/merge users and operation clients verified zero after cleanup. Created Drive test folder only was trashed; original Drive mappings/files retained.
+- [x] Original rows/fields from 11 pre-change public table snapshots verified preserved; one expected Agent-to-Viewer role conversion. Recovery export is private and not a complete Auth/Storage backup.
+- [x] Follow-up migration `20261017163618_suite_case_reference_correction.sql` applied to the same Suite target; locked six-digit manual references compare without truncation.
+
+Security advisor: guarded authenticated `suite_action` and upload-lease definer RPCs remain intentional warnings; Viewer RPC denial and direct financial-write denial were exercised. Existing `rls_auto_enable` public/authenticated execution and disabled leaked-password protection remain wider findings. No all-clear security claim.
+
+Use `docs/USER_GUIDE.md` for the actual working flow and `docs/RELEASE_STATUS.md` for release scope. Historical pre-operations test scripts are blocked before creating obsolete Agent fixtures.

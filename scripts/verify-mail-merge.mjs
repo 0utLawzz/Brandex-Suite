@@ -16,8 +16,8 @@ const service = createClient(url, key, { auth: { persistSession: false, autoRefr
 const users = [], sessions = [], templates = [], cases = [], clients = [], categories = [];
 const run = crypto.randomUUID().slice(0, 8); let checks = 0;
 function check(value, name) { assert.ok(value, name); console.log("PASS " + name); checks++; }
-async function staff(role) {
-  const email = `merge-${run}-${role}@example.com`, password = crypto.randomUUID() + "Aa1!";
+async function staff(role, label = role) {
+  const email = `merge-${run}-${label}@example.com`, password = crypto.randomUUID() + "Aa1!";
   const { data, error } = await service.auth.admin.createUser({ email, password, email_confirm: true }); assert.ifError(error); users.push(data.user.id);
   assert.ifError((await service.from("profiles").update({ role }).eq("id", data.user.id)).error);
   const jar = new Map(); const client = createServerClient(url, anon, { cookies: { getAll: () => [...jar].map(([name, value]) => ({ name, value })), setAll: values => values.forEach(value => jar.set(value.name, value.value)) } });
@@ -30,7 +30,7 @@ async function api(role, path, method = "GET", body) {
   return { status: response.status, data, location: response.headers.get("location") };
 }
 try {
-  const admin = await staff("admin"), viewer = await staff("viewer"), agent = await staff("agent");
+  const admin = await staff("admin"), viewer = await staff("viewer"), agent = await staff("viewer", "former-agent");
   let r = await api(admin, "/api/template-categories", "POST", { name: "TEST-MERGE-" + run }); check(r.status === 201, "Admin creates data-driven category"); const categoryId = r.data.id; categories.push(categoryId);
   const template = { name: "Test template " + run, category_id: categoryId, content: "Client: {{trading_as}}\nCase: {{case_code}}\nFor: {{custom.recipient}}\n{{case_images}}", description: "Test", allowed_origins: ["fresh"], archived: false };
   r = await api(admin, "/api/templates", "POST", template); check(r.status === 201, "Admin creates template"); const templateId = r.data.id; templates.push(templateId);

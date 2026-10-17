@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:operations": "node scripts/verify-operations-db.mjs",
+    "test": "node --test scripts/ledger.test.mjs scripts/mail-merge.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
@@ -19,6 +21,7 @@
     "sharp": "0.34.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
     "@types/node": "^24.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",

@@ -1,5 +1,22 @@
 # Brandex IPO Case Management — System Definition & Roadmap
 
+
+## 17 October 2026 — Suite operations release
+
+The current target is **Brandex Suite**, Supabase `xogbpsnsmephupbqsfgb`, Vercel team `projectsb`. Earlier mature CMS candidate location below is historical and must not be used for Suite migrations.
+
+- Visible Intake renamed **Case Registration / New Case** at `/new-case`; old `/intake` redirects.
+- Native client/case/TM identity, configurable series, default Monthly Billing, explicit Advance full-allocation gate, preset stage charges, receiving allocations, stable case receipts, edit/void audit.
+- Staff-driven stage events and calendar flags; Accepted creates Stage 3 charge; STOPPED pauses flags; TM-57 reactivation separate charge. Certificate office receipt and delivery tracking are separate.
+- Service Associate contact/payee (no login), assignment liability and partial FIFO settlements. Staff roles Admin + Viewer; historical Agent accounts become Viewer, retained.
+- Original legacy ledger stays read-only and excluded from new financial totals. Existing records require identity/workflow review; no guessed backfill.
+- Migration `20261017152217_suite_case_accounts_workflow.sql` applied to Suite; updated `suite-drive-upload` deployed for same-folder identity sync. Production `dpl_9wUq3fKsAzu8HQxdJ5h1B9UPSmKa` READY at https://brandex-suite.vercel.app.
+- Verified locally: production build, TypeScript, Deno, six unit checks and 45 Postgres operation checks. Hosted acceptance completed: 75 checks across operations, Drive identity, browser writes and document generation; see `PROCESS.MD`.
+- Private recovery export of 11 existing public tables saved before migration; not a full Auth/Storage backup. Original live data preserved.
+
+Still pending: legacy Ledger/Sheets reconciliation/import; full mature registry/journal/export parity; objection resolution return path; paid associate reassignment rules; renewal automation; long-term OAuth expiry review. These are not claimed complete by this release.
+
+
 **Decision baseline: 16 October 2026**  
 **Status: Confirmed requirements. Local implementation candidate started in the mature CMS repository; no production cutover yet.**  
 **Authority: Latest explicit owner decisions supersede conflicting earlier specifications.**
@@ -280,8 +297,8 @@ Source: https://docs.google.com/spreadsheets/d/1tZqytFeYCnFCxVqJWTIUqJC8qwpop_J6
 
 Confirmed decisions are captured above; unresolved edges are explicit. Local analysis identifies the major changes, but live compatibility, security and complete flow acceptance remain to be verified. This roadmap is not a claim of completed implementation.
 
-No app/database/data/deployment change was made to prepare this document. Documentation is saved locally; no Git push is performed because this repo's main branch automatically deploys to Vercel.
+The original analysis was documentation-only. The 17 October implementation overlay at the top records the subsequent owner-authorized live Suite release.
 
 ## Implementation authorization and location
 
-Owner authorized a visual PPTX/PDF and then coding, allowing a fresh implementation while preserving recoverable source/data. Work is on `Brandex-Database-CMS` branch `feat/confirmed-workflow-ledger`, preserving its operational frontend. New integrated billing tables support a fresh financial baseline; the old standalone Ledger and Sheets are unchanged. Legacy financial reconciliation and deployment setup remain required before cutover. Current source/test status is in that repo's `docs/CONFIRMED_BUILD_STATUS.md`.
+Owner authorized a visual PPTX/PDF and then coding. The mature `Brandex-Database-CMS` candidate on `feat/confirmed-workflow-ledger` is preserved as historical reference. The owner-confirmed implementation and deployment target is now **Brandex Suite**, Supabase `xogbpsnsmephupbqsfgb`, Vercel `brandex-suite` / team `projectsb`. Suite-native operations migrations and hosted verification are tracked in `PROCESS.MD`; no CMS candidate migration is applied to Suite. Old Ledger/Sheets remain separate pending explicit reconciliation.

@@ -1,5 +1,22 @@
 # Brandex Suite — Agent Instructions
 
+
+## 17 October 2026 — Suite operations release
+
+The current target is **Brandex Suite**, Supabase `xogbpsnsmephupbqsfgb`, Vercel team `projectsb`. Earlier mature CMS candidate location below is historical and must not be used for Suite migrations.
+
+- Visible Intake renamed **Case Registration / New Case** at `/new-case`; old `/intake` redirects.
+- Native client/case/TM identity, configurable series, default Monthly Billing, explicit Advance full-allocation gate, preset stage charges, receiving allocations, stable case receipts, edit/void audit.
+- Staff-driven stage events and calendar flags; Accepted creates Stage 3 charge; STOPPED pauses flags; TM-57 reactivation separate charge. Certificate office receipt and delivery tracking are separate.
+- Service Associate contact/payee (no login), assignment liability and partial FIFO settlements. Staff roles Admin + Viewer; historical Agent accounts become Viewer, retained.
+- Original legacy ledger stays read-only and excluded from new financial totals. Existing records require identity/workflow review; no guessed backfill.
+- Migration `20261017152217_suite_case_accounts_workflow.sql` applied to Suite; updated `suite-drive-upload` deployed for same-folder identity sync. Production `dpl_9wUq3fKsAzu8HQxdJ5h1B9UPSmKa` READY at https://brandex-suite.vercel.app.
+- Verified locally: production build, TypeScript, Deno, six unit checks and 45 Postgres operation checks. Hosted acceptance completed: 75 checks across operations, Drive identity, browser writes and document generation; see `PROCESS.MD`.
+- Private recovery export of 11 existing public tables saved before migration; not a full Auth/Storage backup. Original live data preserved.
+
+Still pending: legacy Ledger/Sheets reconciliation/import; full mature registry/journal/export parity; objection resolution return path; paid associate reassignment rules; renewal automation; long-term OAuth expiry review. These are not claimed complete by this release.
+
+
 ## Current owner direction - 17 October 2026
 
 Read `docs/SYSTEM_ROADMAP.md` before further implementation. Latest explicit owner decisions supersede conflicting historical Mail Merge, Agent-login, data-wipe, payment and workflow assumptions below. Owner authorized coding and Drive integration. Confirmed hosted target is Brandex-Suite `xogbpsnsmephupbqsfgb`, frontend `https://brandex-suite.vercel.app`. Preserve other repos/live data. Never apply the separate mature CMS candidate migrations directly to Suite.
@@ -7,7 +24,7 @@ Read `docs/SYSTEM_ROADMAP.md` before further implementation. Latest explicit own
 This file is read by any AI coding assistant working in this repo (Claude Code, Codex, GPT-based assistants, etc.). Follow it before making changes, so work stays consistent across tools and sessions.
 
 ## What this project is
-A single consolidated web app replacing three separate legacy systems: Brandex EMS (case/client database), a standalone client ledger, and a standalone mail merge tool. All three are being merged into one app. **No data migration** — old systems only had test data, this is a fresh build.
+A single consolidated web app replacing three separate legacy systems: Brandex EMS (case/client database), a standalone client ledger, and a standalone mail merge tool. All three are being merged into one app. Existing Suite rows, Drive files and the separate mature CMS/Ledger/Sheets must be preserved. Historical test-data wipe permission is superseded; never infer a new wipe or import.
 
 ## Stack
 - **Frontend/Backend**: Next.js
@@ -17,7 +34,7 @@ A single consolidated web app replacing three separate legacy systems: Brandex E
 ## Roles (enforce via Supabase RLS)
 - **Admin** — full read/write, all tables
 - **Viewer** — read-only, all tables
-- **Agent** — read/write ONLY on cases where `assigned_agent_id` matches their user id; can update status/assessment fields only, never core client/case/ledger data
+- **Service Associate** — contact/payee only, no login. Legacy Agent accounts are retained as Viewer; assignment IDs remain historical.
 
 ## Core schema
 - `clients` — client_code, trading_as, address, contact_info
@@ -80,7 +97,7 @@ Lives in the same database as cases, not standalone — payment status should al
 - The user selected `net2outlawzz@gmail.com` as the first Admin email. Private invitation/recovery links are single-use and must never be committed, published on a preview page, or consumed during agent testing. The user chooses their password.
 - Hosted Auth must stay invitation-only (`enable_signup = false`), including the direct Supabase signup API; hiding signup UI alone is insufficient. `deployment/supabase/config.toml` is the sparse hosted config. Diff it before pushing, leaving undeclared project settings unchanged.
 
-## Phase 5 notes — 16 October 2026
+## Historical Phase 5 notes — 16 October 2026 (superseded by current operations release)
 
 - `/dashboard` and `/cases` fetch session-scoped data through RLS; Agents see assigned cases and matching payment/document totals only. Reads paginate past the Data API limit.
 - Admin assigns, reassigns, and unassigns from case detail. Agent targets must have the current Agent role. Account email labels are synced from Auth into profiles; do not widen roster access beyond Admin.
@@ -89,7 +106,7 @@ Lives in the same database as cases, not standalone — payment status should al
 - `scripts/verify-phase5.mjs` uses temporary real Auth sessions to test dashboards, filters, assignments, role demotion, stale edits, and protected core columns. Cleanup is scoped to exact generated IDs.
 
 
-## Drive continuation - 17 October 2026
+## Historical first Drive port - 17 October 2026 (current release adds identity sync)
 
 - Read `PROCESS.MD`, `AGENT.MD`, `CHANGELOG.md`, `docs/DRIVE_CONNECTION_STATUS.md` before continuing.
 

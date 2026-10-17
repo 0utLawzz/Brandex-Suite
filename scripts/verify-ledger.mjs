@@ -1,3 +1,5 @@
+// Historical verification for the pre-operations schema; preserved for reference.
+throw new Error("Superseded: use verify-operations-db.mjs, verify-operations-live.mjs and verify-drive-identity.mjs. This historical script must not create legacy Agent fixtures in the current schema.");
 // Run against a local app and the linked disposable-test project:
 // BRANDEX_TEST_SERVICE_KEY=<server-only key> node scripts/verify-ledger.mjs
 // If omitted, the authenticated Supabase CLI supplies the key in memory.

@@ -17,12 +17,14 @@ export default function DriveUploadPanel({
   clientCode,
   caseNumber,
   canWrite,
+  defaultFolderName,
 }: {
   caseId: string;
   clientId: string;
   clientCode: string;
   caseNumber: string;
   canWrite: boolean;
+  defaultFolderName?: string;
 }) {
   const [sb] = useState(() => createClient());
   const [roots, setRoots] = useState<Root[]>([]),
@@ -30,7 +32,7 @@ export default function DriveUploadPanel({
     [series, setSeries] = useState(clientCode.match(/^([A-Z]+)-/)?.[1] ?? "");
   const [clientFolder, setClientFolder] = useState(""),
     [caseFolder, setCaseFolder] = useState(""),
-    [folderName, setFolderName] = useState(`${clientCode}-${caseNumber}`);
+    [folderName, setFolderName] = useState(defaultFolderName??`${clientCode}-${caseNumber}`);
   const [bound, setBound] = useState(false),
     [clientBound, setClientBound] = useState(false),
     [file, setFile] = useState<File | null>(null),

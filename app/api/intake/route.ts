@@ -20,6 +20,15 @@ export async function POST(request: Request) {
   const casePrefix = String(form.get("case_prefix") ?? "").trim();
   const caseNumber = String(form.get("case_number") ?? "").trim();
   const origin = String(form.get("origin") ?? "").trim();
+  const mark = String(form.get("application_name")??"").trim();
+  const tm=String(form.get("tm_number")??"").replace(/[\s-]/g,"");
+  const niceClass=String(form.get("nice_class")??"").trim();
+  if(!mark||mark.length>200||!/^\d{1,6}$/.test(caseNumber)||(tm&&!/^\d{6}$/.test(tm))||(niceClass&&(!/^\d{1,2}$/.test(niceClass)||Number(niceClass)<1||Number(niceClass)>45)))return NextResponse.json({error:"Enter mark name, manual case number, optional six-digit TM and Class 1–45."},{status:400});
+  const canonicalCase=caseNumber.padStart(3,"0");
+  const normalizedCode=clientCode.toUpperCase().replace(/\s/g,"");
+  if(!clientId&&!/^[A-Z][A-Z0-9]{0,11}-[0-9]{3,6}$/.test(normalizedCode))return NextResponse.json({error:"Client code must be SERIES-123."},{status:400});
+  let rates:Record<string,number>={};
+  try{for(let stage=1;stage<=4;stage++){const v=String(form.get(`rate_${stage}`)??"").trim();if(v){if(!/^\d{1,10}(\.\d{1,2})?$/.test(v)||Number(v)>9999999999.99)throw new Error();rates[String(stage)]=Number(v);}}}catch{return NextResponse.json({error:"Enter valid stage rates."},{status:400});}
   if ((!clientId && (!clientCode || !tradingAs || !address)) || !casePrefix || !caseNumber || !origins.has(origin)) {
     return NextResponse.json({ error: "Complete the client, case number, and origin fields." }, { status: 400 });
   }
@@ -35,15 +44,18 @@ export async function POST(request: Request) {
   const uploadedPaths: string[] = [];
   try {
     if (resolvedClientId) {
-      const { data: existing, error } = await supabase.from("clients").select("id").eq("id", resolvedClientId).single();
+      const { data: existing, error } = await supabase.from("clients").select("id,client_code").eq("id", resolvedClientId).single();
+      if (existing && !/^[A-Z][A-Z0-9]{0,11}-[0-9]{3,6}$/.test(existing.client_code)) return NextResponse.json({error:"Align this client code in Client Ledger before registering another case."},{status:400});
       if (error || !existing) return NextResponse.json({ error: "Selected client was not found." }, { status: 400 });
     } else {
-      const { data: client, error } = await supabase.from("clients").insert({ client_code: clientCode, trading_as: tradingAs, address }).select("id").single();
+      const {data: configured}=await supabase.from("case_series").select("code").eq("code",normalizedCode.split("-")[0]).maybeSingle();
+      if(!configured)return NextResponse.json({error:"Add this client series first."},{status:400});
+      const { data: client, error } = await supabase.from("clients").insert({ client_code: normalizedCode, trading_as: tradingAs, address, city:String(form.get("city")??"").trim().slice(0,120), stage_rates:rates, payment_terms:form.get("payment_terms")==="advance"?"advance":"monthly" }).select("id").single();
       if (error || !client) return NextResponse.json({ error: error?.message ?? "Could not create client." }, { status: 400 });
       resolvedClientId = client.id; createdClient = true;
     }
 
-    const { data: caseRecord, error: caseError } = await supabase.from("cases").insert({ client_id: resolvedClientId, case_prefix: casePrefix, case_number: caseNumber, origin }).select("id, case_prefix, case_number").single();
+    const { data: caseRecord, error: caseError } = await supabase.from("cases").insert({ client_id: resolvedClientId, case_prefix: casePrefix, case_number: canonicalCase, origin, application_name:mark, tm_number:tm||null, nice_class:niceClass?Number(niceClass):null,identity_confirmed:true,workflow_stage:origin==="stage2"?2:origin==="stage3"?3:1,workflow_step:origin==="fresh"?"registered":"review" }).select("id, case_prefix, case_number").single();
     if (caseError || !caseRecord) throw new Error(caseError?.message ?? "Could not create case.");
     caseId = caseRecord.id;
 
@@ -64,13 +76,10 @@ export async function POST(request: Request) {
       const { error: cleanupError } = await supabase.storage.from("case-images").remove(uploadedPaths);
       if (cleanupError) return NextResponse.json({ error: `Upload failed and image cleanup could not finish. Case ${caseId} was kept for Admin recovery.` }, { status: 500 });
     }
-    if (caseId) {
-      const { error: cleanupError } = await supabase.from("cases").delete().eq("id", caseId);
-      if (cleanupError) return NextResponse.json({ error: `Intake failed and case ${caseId} could not be removed. Admin recovery is required.` }, { status: 500 });
-    }
+    if (caseId) return NextResponse.json({id:caseId,caseNumber:canonicalCase,warning:"Case registered; supporting image upload failed. The case and charge were preserved."},{status:201});
     if (createdClient && resolvedClientId) {
       const { error: cleanupError } = await supabase.from("clients").delete().eq("id", resolvedClientId);
-      if (cleanupError) return NextResponse.json({ error: `Intake failed and client ${resolvedClientId} could not be removed. Admin recovery is required.` }, { status: 500 });
+      if (cleanupError) return NextResponse.json({ error: `Registration failed and client ${resolvedClientId} could not be removed. Admin recovery is required.` }, { status: 500 });
     }
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not create case." }, { status: 400 });
   }

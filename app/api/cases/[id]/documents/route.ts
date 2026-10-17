@@ -35,7 +35,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   try {
     const images: Buffer[] = [];
     if (placeholders(template.content).includes("case_images")) {
-      if (!Array.isArray(record.images) || !record.images.length || record.images.length > 10) throw new Error("This template needs 1–10 case images captured at intake.");
+      if (!Array.isArray(record.images) || !record.images.length || record.images.length > 10) throw new Error("This template needs 1–10 case images captured during registration.");
       for (const image of record.images) {
         if (typeof image.path !== "string" || !image.path.startsWith(`${id}/`) || image.path.includes("..")) throw new Error("A case image reference is invalid.");
         const { data, error } = await supabase.storage.from("case-images").download(image.path);

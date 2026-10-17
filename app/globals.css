@@ -57,3 +57,6 @@ fieldset { border:0; margin:0; padding:0; min-width:0; }
 .assignment-form { padding-bottom:24px; margin-bottom:24px; border-bottom:1px solid currentColor; }
 @media(max-width:800px) { .dashboard-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } .dashboard-columns { grid-template-columns:1fr; } }
 @media(max-width:450px) { .dashboard-stats { grid-template-columns:1fr; } .case-filters .field,.case-filters select { width:100%; max-width:none; } }
+
+/* Operational data stays readable as filters grow. */
+.case-filters{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));align-items:end}.workflow-flag{display:inline-block;padding:7px;border:2px solid var(--text);font-size:13px}.workflow-flag.red{background:#f8d8cc}.workflow-flag.yellow{background:#fff0ac}.workflow-flag.green{background:#cbe7d9}.workflow-flag.review{background:#eee0bc}.nb-panel+.nb-panel{margin-top:12px}.module-card details{margin-top:16px}summary{cursor:pointer;font-weight:700;padding:12px 0}fieldset .nb-button{margin-top:12px}.search-row{flex-wrap:wrap}.receipt-page{max-width:950px} @media print{.no-print,nav{display:none!important}.phase-page{max-width:none;padding:0}.nb-card{box-shadow:none}.receipt-page .nb-table{width:100%}body{background:white!important}}

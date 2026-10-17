@@ -1,0 +1,1 @@
+"use client";export default function PrintButton(){return <button className="nb-button no-print" onClick={()=>window.print()}>PRINT / SAVE PDF</button>;}

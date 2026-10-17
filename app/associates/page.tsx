@@ -1,0 +1,2 @@
+import{requireStaff}from"@/lib/auth";import{Navbar}from"@/components/ui/navbar";import AssociateAccounts from"@/components/associate-accounts";
+export default async function Associates(){const{role}=await requireStaff();return <><Navbar role={role}/><main className="phase-page"><p className="eyebrow">SERVICE ASSOCIATES · PKR</p><h1>Assignments & settlements</h1><AssociateAccounts canWrite={role==="admin"}/></main></>;}

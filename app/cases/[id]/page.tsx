@@ -1,51 +1,169 @@
-import DriveUploadPanel from "@/components/drive-upload-panel";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireStaff } from "@/lib/auth";
-import { formatAmount, ledgerTotals, uuidPattern, type LedgerEntry } from "@/lib/ledger";
+import { uuidPattern } from "@/lib/ledger";
+import { money, stepLabels } from "@/lib/operations";
 import { Navbar } from "@/components/ui/navbar";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import CaseControls from "./case-controls";
-import { loadAgents } from "@/lib/workspace";
-import LedgerPanel from "./ledger-panel";
+import CaseOperations from "@/components/case-operations";
+import DriveUploadPanel from "@/components/drive-upload-panel";
 import MailMergePanel from "@/components/mail-merge-panel";
 import { caseValues, type GeneratedDocument } from "@/lib/mail-merge";
 import { loadTemplateLibrary } from "@/lib/template-data";
-
-export default async function CasePage({ params }: { params: Promise<{ id: string }> }) {
-  const { supabase, role, user } = await requireStaff();
-  const { id } = await params;
+export default async function Case({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { supabase, role } = await requireStaff(),
+    { id } = await params;
   if (!uuidPattern.test(id)) notFound();
-  const { data: record, error } = await supabase.from("cases").select("id, client_id, case_prefix, case_number, origin, stage, status, assessment, assigned_agent_id, updated_at").eq("id", id).maybeSingle();
-  if (error) throw new Error("Could not load case. Please try again.");
-  if (!record) notFound();
-  const { data: client, error: clientError } = await supabase.from("clients").select("client_code, trading_as, address").eq("id", record.client_id).single();
-  if (clientError) throw new Error("Could not load client. Please try again.");
-
-  // Fetch all pages so totals do not silently stop at the Data API row limit.
-  const entries: LedgerEntry[] = [];
-  for (let offset = 0; ; offset += 500) {
-    const { data, error: ledgerError } = await supabase.from("ledger").select("id, amount, type, status, date").eq("case_id", id).order("date", { ascending: false, nullsFirst: false }).order("id").range(offset, offset + 499);
-    if (ledgerError) throw new Error("Could not load ledger. Please try again.");
-    entries.push(...data as LedgerEntry[]);
-    if (data.length < 500) break;
-  }
-  const totals = ledgerTotals(entries);
-  const { templates, categories } = await loadTemplateLibrary(supabase);
-  const documents: GeneratedDocument[] = [];
-  for (let offset = 0; ; offset += 500) {
-    const { data, error: documentsError } = await supabase.from("documents").select("id, template_name, file_name, generated_at").eq("case_id", id).order("generated_at", { ascending: false }).order("id").range(offset, offset + 499);
-    if (documentsError) throw new Error("Could not load documents.");
-    documents.push(...data); if (data.length < 500) break;
-  }
-  const agents = role === "admin" ? await loadAgents(supabase) : [];
-  return <><Navbar current="cases" role={role} /><main className="phase-page"><div className="page-top"><div><p className="eyebrow">BRANDEX SUITE / CASE</p><h1>{record.case_prefix}-{record.case_number}</h1><Badge tone="teal">{record.status}</Badge></div><Link className="nb-button" href="/cases">ALL CASES</Link></div>
-    <Card><h2>{client.trading_as}</h2><p>{client.client_code} · {client.address}</p><p>Origin: {record.origin} · Stage: {record.stage} · Status: {record.status}</p>{record.assessment && <p>Assessment: {record.assessment}</p>}<p className="muted">Core client and case details are captured at intake.</p></Card>
-    {(role === "admin" || (role === "agent" && record.assigned_agent_id === user.id)) && <Card className="module-card"><CaseControls key={record.updated_at} caseId={id} status={record.status} assessment={record.assessment} assignedAgentId={record.assigned_agent_id} updatedAt={record.updated_at} agents={agents} role={role} /></Card>}
-    <div className="payment-summary"><Card><p className="eyebrow">PAID</p><strong>{formatAmount(totals.paid)}</strong></Card><Card><p className="eyebrow">PENDING</p><strong>{formatAmount(totals.pending)}</strong></Card><Card><p className="eyebrow">PAYMENT STATUS</p><strong>{!entries.length ? "No entries" : totals.pending > 0 ? "Pending" : "Paid"}</strong></Card></div>
-    <Card><p className="section-label">CASE PAYMENTS</p><h2>Ledger</h2><LedgerPanel caseId={id} entries={entries} canWrite={role === "admin"} /></Card>
-    {(role === "admin" || role === "viewer") && <Card className="module-card"><DriveUploadPanel caseId={id} clientId={record.client_id} clientCode={client.client_code} caseNumber={record.case_number} canWrite={role === "admin"} /></Card>}
-    <Card className="module-card"><MailMergePanel caseId={id} values={caseValues(record, client)} categories={categories} templates={templates} documents={documents} canGenerate={role === "admin"} /></Card>
-  </main></>;
+  const { data: r, error } = await supabase
+    .from("suite_case_register")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error("Could not load case");
+  if (!r) notFound();
+  const [client, legacy, docs, library] = await Promise.all([
+    supabase
+      .from("clients")
+      .select("client_code,trading_as,address")
+      .eq("id", r.client_id)
+      .single(),
+    supabase
+      .from("ledger")
+      .select("id,amount,type,status,date")
+      .eq("case_id", id)
+      .order("date", { ascending: false })
+      .limit(100),
+    supabase
+      .from("documents")
+      .select("id,template_name,file_name,generated_at")
+      .eq("case_id", id)
+      .order("generated_at", { ascending: false })
+      .limit(100),
+    loadTemplateLibrary(supabase),
+  ]);
+  if (client.error || !client.data || legacy.error || docs.error)
+    throw new Error("Could not load case history");
+  return (
+    <>
+      <Navbar current="cases" role={role} />
+      <main className="phase-page">
+        <div className="page-top">
+          <div>
+            <p className="eyebrow">
+              {r.case_reference} ·{" "}
+              {r.tm_number ? `TM ${r.tm_number}` : "TM NOT ISSUED"}
+            </p>
+            <h1>{r.application_name || "Confirm case identity"}</h1>
+            <p>
+              {r.trading_as} · Stage {r.workflow_stage} ·{" "}
+              {stepLabels[r.workflow_step] ?? r.workflow_step}
+            </p>
+          </div>
+          <Link className="nb-button" href="/cases">
+            ALL CASES
+          </Link>
+        </div>
+        {r.followup && (
+          <Card>
+            <strong className={`workflow-flag ${r.followup.tone}`}>
+              {r.followup.reason}
+            </strong>
+            {r.followup.due && (
+              <p>Due {r.followup.due} · calendar days, holidays included</p>
+            )}
+          </Card>
+        )}
+        <div className="payment-summary">
+          {[
+            ["BILLED", r.billed],
+            ["ALLOCATED", r.received],
+            ["OUTSTANDING", r.outstanding],
+          ].map(([label, v]) => (
+            <Card key={label}>
+              <p className="eyebrow">{label} · PKR</p>
+              <strong>{money(v)}</strong>
+            </Card>
+          ))}
+        </div>
+        <p>
+          Terms:{" "}
+          {r.payment_terms === "monthly"
+            ? "Monthly Billing / Credit"
+            : "Advance Payment"}{" "}
+          ·{" "}
+          {Number(r.unpriced) > 0
+            ? `${r.unpriced} charges need a rate`
+            : "All issued charges priced"}
+        </p>
+        <CaseOperations
+          key={r.updated_at}
+          record={r}
+          canWrite={role === "admin"}
+        />
+        <Card className="module-card">
+          <DriveUploadPanel
+            caseId={id}
+            clientId={r.client_id}
+            clientCode={r.client_code}
+            caseNumber={r.case_number}
+            defaultFolderName={`${r.client_code}-${r.case_number} ${r.application_name.slice(0, 140)}${r.tm_number ? " " + r.tm_number : ""}${r.nice_class ? " C" + r.nice_class : ""}`}
+            canWrite={role === "admin"}
+          />
+        </Card>
+        {legacy.data.length > 0 && (
+          <details className="module-card">
+            <summary>
+              Historical paid/pending entries (read-only, not new ledger
+              allocations)
+            </summary>
+            <Card>
+              <table className="nb-table">
+                <thead>
+                  <tr>
+                    <th>DATE</th>
+                    <th>DETAILS</th>
+                    <th>AMOUNT</th>
+                    <th>LEGACY STATUS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {legacy.data.map((l) => (
+                    <tr key={l.id}>
+                      <td>{l.date}</td>
+                      <td>{l.type}</td>
+                      <td>{money(l.amount)}</td>
+                      <td>{l.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <small>
+                Latest 100 legacy entries. No automatic financial conversion was
+                performed.
+              </small>
+            </Card>
+          </details>
+        )}
+        <details className="module-card">
+          <summary>
+            Document generation & previous documents (separate workstream)
+          </summary>
+          <Card>
+            <MailMergePanel
+              caseId={id}
+              values={caseValues(r, client.data)}
+              categories={library.categories}
+              templates={library.templates}
+              documents={docs.data as GeneratedDocument[]}
+              canGenerate={role === "admin"}
+            />
+          </Card>
+        </details>
+      </main>
+    </>
+  );
 }
