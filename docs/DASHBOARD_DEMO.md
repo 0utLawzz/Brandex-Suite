@@ -6,3 +6,5 @@
 - Includes search, filters, case detail dialogs, attention queue, ledger view, document preview/download, sample registration with existing-client suggestions, CSV export, Admin/Viewer presentation switch, and reset. Demo role switch is presentation only, never authorization.
 - Existing dashboard, live workflows, financial operations, Auth/RLS and production data remain unchanged. This is an interactive design prototype, not a replacement for the full registration, document generation, or associate payment workflows.
 - Demo registration origin sets only the initial illustrative stage; it does not introduce automatic live workflow transitions.
+
+Verification: production build and TypeScript passed. Browser checks covered search, overdue filtering, case/document preview, registration, reset, Viewer presentation and stage-2 sample origin. No browser console errors observed. Mobile 390px check confirmed no page-level horizontal overflow after the containment fix; wide tables retain their own scroll region. Final preview uses the development server at http://localhost:3100/dashboard-demo. Source pushed on the separate demo branch; production dashboard not replaced.
