@@ -451,7 +451,7 @@ export default function AccountPanel({
                     ),
                 )}
               </p>
-              <Button type="submit" variant="accent">
+              <Button type="submit" variant="teal">
                 SAVE RECEIVING
               </Button>
               <Button onClick={reset}>CLEAR / NEW RECEIVING</Button>

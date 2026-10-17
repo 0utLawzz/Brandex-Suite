@@ -125,3 +125,7 @@ Lives in the same database as cases, not standalone — payment status should al
 - Hosted API verification passed 18 checks against isolated fixtures/private test root; fixture records/users removed and test Drive folders trashed. Browser/deployment evidence is recorded separately.
 
 - Final hosted verification: 23 API/browser checks, including Admin upload and Viewer history/no upload controls; seven original public tables match pre-change export after fixture cleanup. Deployment identifiers and completed root privacy verification are in PROCESS.MD.
+
+## Current visual direction
+
+17 October: Ledger PR #1 merged as 91aa9ab. Suite uses that editorial direction with stronger colour/action hierarchy. Desktop screen density is 90%; mobile/print 100%. `/guide` explains the actual flow. Keep payment calculations, permissions and Drive/workflow behavior unchanged during visual work. Review PROCESS.MD for evidence.

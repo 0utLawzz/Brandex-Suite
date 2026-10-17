@@ -103,3 +103,17 @@ Still pending: legacy Ledger/Sheets reconciliation/import; full mature registry/
 Security advisor: guarded authenticated `suite_action` and upload-lease definer RPCs remain intentional warnings; Viewer RPC denial and direct financial-write denial were exercised. Existing `rls_auto_enable` public/authenticated execution and disabled leaked-password protection remain wider findings. No all-clear security claim.
 
 Use `docs/USER_GUIDE.md` for the actual working flow and `docs/RELEASE_STATUS.md` for release scope. Historical pre-operations test scripts are blocked before creating obsolete Agent fixtures.
+
+
+## 17 October 2026 — Editorial UI and working guide
+
+Owner requested the Client Ledger PR review/merge, its preferred visual direction in Suite, stronger colour/action hierarchy and an approximately 90% desktop display.
+
+- Reviewed exact Client Ledger PR #1 head `1ef6ad35e0e170763211e331fbfd8263a27c8e5d`: markup/CSS/display escaping/dialog behavior only. Four changed JavaScript files pass syntax checks; whitespace validation and Vercel status pass. Old/new local client screens used synthetic data with network writes disabled.
+- Marked PR ready and merged as `91aa9ab8d59cd44fafc767c1bd081d41a99d6237`. GitHub rejected author's self-APPROVE (422); a review COMMENT records evidence and owner merge authorization. No fake second reviewer or approval claim.
+- Ledger production `dpl_2QfUokPYfv6JJRKpYzEPpUx2mwmv` READY. Served editorial CSS, interaction JS and brand patch match the reviewed source after line-ending normalization. The original preview URL also identifies the reviewed commit; unauthenticated browser preview navigation timed out, so browser screenshots use the exact local source instead.
+- Suite applies editorial serif headings, client cards, compact tables, clear section headers, coloured financial/status cards and payment actions. Unknown stage rates remain explicitly marked; no financial calculation/migration changed.
+- Desktop screen only uses 90% density at widths >=1024px; mobile and print remain full scale. Browser zoom preference itself is not changed.
+- Navigation now shows active Client Ledger/Service Associates and keeps Sign out on authenticated pages. Added `/guide` (How to use) with Roman Urdu explanations, reference breakdown, payment example, stage path, associates/files/delivery and flag timings.
+- Local production build and TypeScript passed. 40 initial Admin/Viewer UI checks passed at 1280px/390px: register/account/case/associate/guide layouts contained, desktop/mobile scale, full print scale, correct account navigation/Sign out and no uncaught browser errors. Final hosted rerun includes unpriced-account presentation.
+- Existing local Client Ledger logo deletion/new stamp and Supabase CLI state remain untouched. No old-system records, Auth settings or database rules changed for this visual pass.

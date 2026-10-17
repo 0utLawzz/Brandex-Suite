@@ -26,3 +26,7 @@ Target: Suite `xogbpsnsmephupbqsfgb`, not mature CMS. Use verified Supabase CLI 
 Drive source and isolated hosted API checks are implemented. Owner approved restricting existing X/A roots; their public writer links are removed and named access is preserved. Uploads continue to fail closed at public/domain destinations. Do not change other permissions without authorization. Dedicated TM/mark/class fields, automatic renaming and the full mature CMS/Ledger candidate are outside this bounded Drive port.
 
 Never print private config values. Record exact evidence and deployed/pending state in the checklist/changelog on each change. Source commits/build success alone do not prove browser or hosted acceptance.
+
+## Current visual direction
+
+17 October: Ledger PR #1 merged as 91aa9ab. Suite uses that editorial direction with stronger colour/action hierarchy. Desktop screen density is 90%; mobile/print 100%. `/guide` explains the actual flow. Keep payment calculations, permissions and Drive/workflow behavior unchanged during visual work. Review PROCESS.MD for evidence.

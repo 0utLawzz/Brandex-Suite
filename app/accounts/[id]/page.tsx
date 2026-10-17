@@ -21,7 +21,7 @@ export default async function Account({
   if (!client) notFound();
   return (
     <>
-      <Navbar role={role} />
+      <Navbar role={role} current="accounts" />
       <main className="phase-page">
         <div className="page-top">
           <div>

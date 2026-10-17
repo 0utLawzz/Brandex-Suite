@@ -10,3 +10,5 @@
 Hosted tests obtain CLI service access in memory for isolated fixture setup/cleanup only. Never print credentials. Google test credentials stay outside the repository. Headless browser checks currently use the local Codex Playwright runtime and installed Chrome; adapt the executable/runtime paths on another machine.
 
 The historical ledger, Phase 5 and initial Drive scripts are intentionally disabled before fixture setup because their Agent role and old financial write assumptions no longer apply. Their source is retained as history. Passing an old test is not current release evidence.
+
+- `node scripts/verify-editorial-ui.mjs`: Admin/Viewer desktop/mobile page containment, 90% desktop/100% mobile and print scale, active navigation, signed-in controls and explicit unpriced-account styling. Uses isolated temporary fixtures only.

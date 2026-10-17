@@ -25,7 +25,7 @@ export default async function Audit({
   if (error) throw new Error("Could not load audit history");
   return (
     <>
-      <Navbar role={role} />
+      <Navbar role={role} current="audit" />
       <main className="phase-page">
         <h1>Audit history</h1>
         <p>

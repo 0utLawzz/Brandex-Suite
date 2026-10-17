@@ -29,7 +29,7 @@ export default async function Accounts({
   }[];
   return (
     <>
-      <Navbar role={role} />
+      <Navbar role={role} current="accounts" />
       <main className="phase-page">
         <div className="page-top">
           <div>
@@ -54,44 +54,15 @@ export default async function Accounts({
             />
             <button className="nb-button">SEARCH</button>
           </form>
-          <div className="table-scroll">
-            <table className="nb-table">
-              <thead>
-                <tr>
-                  <th>CLIENT</th>
-                  <th>TERMS</th>
-                  <th>BILLED</th>
-                  <th>ALLOCATED</th>
-                  <th>OUTSTANDING</th>
-                  <th>ADVANCE</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((c) => (
-                  <tr key={c.id}>
-                    <td>
-                      <Link href={`/accounts/${c.id}`}>
-                        {c.client_code} · {c.trading_as}
-                      </Link>
-                    </td>
-                    <td>
-                      {c.payment_terms === "monthly"
-                        ? "Monthly Billing"
-                        : "Advance"}
-                      {Number(c.unpriced) > 0 && (
-                        <small className="table-detail">
-                          {c.unpriced} rates needed
-                        </small>
-                      )}
-                    </td>
-                    <td>{money(c.billed)}</td>
-                    <td>{money(c.allocated)}</td>
-                    <td>{money(c.outstanding)}</td>
-                    <td>{money(Number(c.received) - Number(c.allocated))}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="account-directory">
+            {rows.map(c=><article className="account-card" key={c.id}>
+              <div className="account-card-top"><span className="account-code">{c.client_code}</span><span className="nb-badge">{c.payment_terms==="monthly"?"Monthly Billing":"Advance"}</span></div>
+              <h2>{c.trading_as}</h2>
+              <p className="muted">{Number(c.unpriced)>0?`${c.unpriced} stage rate(s) need confirmation`:"All issued stage charges priced"}</p>
+              <dl className="account-figures"><div><dt>Billed</dt><dd>{money(c.billed)}</dd></div><div><dt>Allocated</dt><dd>{money(c.allocated)}</dd></div><div><dt>Unallocated advance</dt><dd>{money(Number(c.received)-Number(c.allocated))}</dd></div></dl>
+              <div className={`account-balance ${Number(c.unpriced)>0?"needs-rate":Number(c.outstanding)>0?"has-due":"is-clear"}`}><span>{Number(c.unpriced)>0?"Known outstanding · PKR":"Outstanding · PKR"}</span><strong>{money(c.outstanding)}</strong></div>
+              <Link className="nb-button nb-button-teal" href={`/accounts/${c.id}`}>OPEN CLIENT LEDGER ↗</Link>
+            </article>)}
           </div>
           <div className="actions">
             <p>

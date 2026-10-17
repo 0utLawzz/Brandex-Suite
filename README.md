@@ -16,6 +16,8 @@ Production: [brandex-suite.vercel.app](https://brandex-suite.vercel.app). Curren
 
 Admin manages the app. Viewer is read-only. Historical Agent accounts are retained as Viewer. The old paid/pending ledger is read-only history, excluded from new financial totals until explicitly reconciled.
 
+The app includes [How to use](https://brandex-suite.vercel.app/guide): Roman Urdu examples and the working flow. Editorial screens use a compact 90% desktop scale; mobile and print stay full size.
+
 ## Documentation
 
 - [Daily working guide](docs/USER_GUIDE.md)
