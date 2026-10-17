@@ -129,3 +129,7 @@ Lives in the same database as cases, not standalone — payment status should al
 ## Current visual direction
 
 17 October: Ledger PR #1 merged as 91aa9ab. Suite uses that editorial direction with stronger colour/action hierarchy. Desktop screen density is 90%; mobile/print 100%. `/guide` explains the actual flow. Keep payment calculations, permissions and Drive/workflow behavior unchanged during visual work. Review PROCESS.MD for evidence.
+
+## Dashboard design prototype — 18 October 2026
+
+`/dashboard-demo` is an isolated sample dashboard based on the owner's Neo-Brutalism Theme.pdf, using Bebas Neue / Space Grotesk / DM Mono. Keep its CSS scoped and its fictional browser data separate from production. Do not apply this demo's illustrative workflows or presentation-only role switch to operational authorization. See `docs/DASHBOARD_DEMO.md`.

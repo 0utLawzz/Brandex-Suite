@@ -117,3 +117,7 @@ Owner requested the Client Ledger PR review/merge, its preferred visual directio
 - Navigation now shows active Client Ledger/Service Associates and keeps Sign out on authenticated pages. Added `/guide` (How to use) with Roman Urdu explanations, reference breakdown, payment example, stage path, associates/files/delivery and flag timings.
 - Local production build and TypeScript passed. 40 initial Admin/Viewer UI checks passed at 1280px/390px: register/account/case/associate/guide layouts contained, desktop/mobile scale, full print scale, correct account navigation/Sign out and no uncaught browser errors. Final hosted rerun includes unpriced-account presentation.
 - Existing local Client Ledger logo deletion/new stamp and Supabase CLI state remain untouched. No old-system records, Auth settings or database rules changed for this visual pass.
+
+## 18 October 2026 — isolated dashboard design demo
+
+Added `/dashboard-demo` on `design/neo-dashboard-demo` for review before any live dashboard replacement. The attached Neo-Brutalism Theme.pdf supersedes historical font choices for this demo only: Bebas Neue, Space Grotesk, DM Mono. Uses fictional in-memory data; middleware skips session refresh for the demo route. No new authorization service. Existing operations remain unchanged. See `docs/DASHBOARD_DEMO.md` for scope and the source's surface-color ambiguity.
