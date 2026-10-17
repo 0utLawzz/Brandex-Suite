@@ -84,7 +84,8 @@ export default function Demo() {
     [creating, setCreating] = useState(false),
     [notice, setNotice] = useState(""),
     [document, setDocument] = useState(false),
-    [role, setRole] = useState("Admin");
+    [role, setRole] = useState("Admin"),
+    [reportTheme, setReportTheme] = useState<"purple" | "ink">("purple");
   const dialog = useRef<HTMLDialogElement>(null);
   const visible = cases.filter(
     (c) =>
@@ -129,7 +130,7 @@ export default function Demo() {
     <div className="bx-demo">
       <header className="bx-nav">
         <a href="/dashboard-demo" className="bx-logo">
-          BRANDEX<span>.</span>
+          <img src="/brand/brandex-wordmark.png" alt="Brandex" />
           <small>SUITE</small>
         </a>
         <nav aria-label="Demo navigation">
@@ -137,6 +138,7 @@ export default function Demo() {
             "Overview",
             "Cases",
             "Client ledger",
+            "Reports",
             "Documents",
             "Associates",
           ].map((t) => (
@@ -243,6 +245,8 @@ export default function Demo() {
                     ? "Client balances"
                     : tab === "Documents"
                       ? "Document workspace"
+                      : tab === "Reports"
+                        ? "Printable reports"
                       : tab === "Associates"
                         ? "Service associates"
                         : "Case register"}
@@ -252,7 +256,60 @@ export default function Demo() {
                 Export CSV
               </button>
             </div>
-            {tab === "Associates" ? (
+            {tab === "Reports" ? (
+              <div className="bx-report-workspace">
+                <div className="bx-report-actions">
+                  <div>
+                    <p className="bx-kicker">A4 PRINT PREVIEW / FICTIONAL DATA</p>
+                    <h3>Aligned case ledger</h3>
+                  </div>
+                  <div className="bx-report-controls" aria-label="Report colour set">
+                    <button
+                      className={reportTheme === "purple" ? "active" : ""}
+                      onClick={() => setReportTheme("purple")}
+                    >
+                      Purple set
+                    </button>
+                    <button
+                      className={reportTheme === "ink" ? "active" : ""}
+                      onClick={() => setReportTheme("ink")}
+                    >
+                      Ink set
+                    </button>
+                    <button className="bx-button primary" onClick={() => window.print()}>
+                      Print A4
+                    </button>
+                  </div>
+                </div>
+                <article className={"bx-print-report bx-report-" + reportTheme}>
+                  <header>
+                    <div>
+                      <img src="/brand/brandex-wordmark.png" alt="Brandex" />
+                      <p>CASE &amp; LEDGER REPORT</p>
+                    </div>
+                    <div className="bx-report-meta">
+                      <strong>18 OCT 2026</strong>
+                      <span>DEMO EXPORT / A4</span>
+                    </div>
+                  </header>
+                  <div className="bx-report-client">
+                    <span>CLIENT ACCOUNT</span>
+                    <strong>NORTHSTAR FOODS / X-254-002</strong>
+                    <span>TRADEMARK: NORTHSTAR · EXAMINATION</span>
+                  </div>
+                  <table>
+                    <thead><tr><th>DATE</th><th>TYPE</th><th>STAGE</th><th>DETAILS</th><th>DUE · PKR</th><th>RECEIVED · PKR</th></tr></thead>
+                    <tbody>
+                      <tr><td>03 OCT 2026</td><td><span className="bx-print-pill charge">CHARGE</span></td><td>FILING</td><td>PROFESSIONAL FEE</td><td>25,000</td><td>—</td></tr>
+                      <tr><td>08 OCT 2026</td><td><span className="bx-print-pill received">RECEIVED</span></td><td>FILING</td><td>BANK TRANSFER</td><td>—</td><td>20,000</td></tr>
+                      <tr><td>16 OCT 2026</td><td><span className="bx-print-pill charge">CHARGE</span></td><td>EXAMINATION</td><td>RESPONSE PREPARATION</td><td>20,000</td><td>—</td></tr>
+                    </tbody>
+                    <tfoot><tr><td colSpan={4}>OUTSTANDING</td><td>45,000</td><td>30,000</td></tr></tfoot>
+                  </table>
+                  <footer>BRANDEX SUITE · PRIVATE CASE REPORT · PAGE 1 OF 1</footer>
+                </article>
+              </div>
+            ) : tab === "Associates" ? (
               <div className="bx-associates">
                 <h3>Hassan Legal Services</h3>
                 <p>Contact / payee · no login</p>
