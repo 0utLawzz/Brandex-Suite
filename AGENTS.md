@@ -1,5 +1,9 @@
 # Brandex Suite — Agent Instructions
 
+## Current owner direction - 17 October 2026
+
+Read `docs/SYSTEM_ROADMAP.md` before further implementation. Latest explicit owner decisions supersede conflicting historical Mail Merge, Agent-login, data-wipe, payment and workflow assumptions below. Owner authorized coding and Drive integration. Confirmed hosted target is Brandex-Suite `xogbpsnsmephupbqsfgb`, frontend `https://brandex-suite.vercel.app`. Preserve other repos/live data. Never apply the separate mature CMS candidate migrations directly to Suite.
+
 This file is read by any AI coding assistant working in this repo (Claude Code, Codex, GPT-based assistants, etc.). Follow it before making changes, so work stays consistent across tools and sessions.
 
 ## What this project is
@@ -76,10 +80,31 @@ Lives in the same database as cases, not standalone — payment status should al
 - The user selected `net2outlawzz@gmail.com` as the first Admin email. Private invitation/recovery links are single-use and must never be committed, published on a preview page, or consumed during agent testing. The user chooses their password.
 - Hosted Auth must stay invitation-only (`enable_signup = false`), including the direct Supabase signup API; hiding signup UI alone is insufficient. `deployment/supabase/config.toml` is the sparse hosted config. Diff it before pushing, leaving undeclared project settings unchanged.
 
-## Phase 5 notes � 16 October 2026
+## Phase 5 notes — 16 October 2026
 
 - `/dashboard` and `/cases` fetch session-scoped data through RLS; Agents see assigned cases and matching payment/document totals only. Reads paginate past the Data API limit.
 - Admin assigns, reassigns, and unassigns from case detail. Agent targets must have the current Agent role. Account email labels are synced from Auth into profiles; do not widen roster access beyond Admin.
 - Admin and assigned Agents edit status/assessment. Core data and stage remain read-only here; no statutory stage rules have been invented. Viewer has no write controls.
 - Assignment/workflow APIs require `expected_updated_at` and return 409 for stale edits. Keep both API authorization and direct-Data-API RLS/trigger protections.
 - `scripts/verify-phase5.mjs` uses temporary real Auth sessions to test dashboards, filters, assignments, role demotion, stale edits, and protected core columns. Cleanup is scoped to exact generated IDs.
+
+
+## Drive continuation - 17 October 2026
+
+- Read `PROCESS.MD`, `AGENT.MD`, `CHANGELOG.md`, `docs/DRIVE_CONNECTION_STATUS.md` before continuing.
+
+- Suite-only additive migration `20261017094102` and `suite-drive-upload` function deployed to the confirmed Suite project. Do not confuse it with `jzcrfbyypbbbittzbyyx`.
+
+- OAuth credentials are server secrets only. Private local configuration is outside the repo; never log/copy values, callback codes or sessions.
+
+- Drive uploads are Admin-only. Viewer can read file history. Legacy Agent authorization elsewhere in Suite has not been removed by this bounded change; Agents have no new Drive access.
+
+- X/A existing roots are seeded, but the X root inherits public sharing. Private destination validation rejects anyone/domain access. Owner choice on restricting existing roots vs new private roots is pending. Never remove existing sharing without authorization.
+
+- Files upload directly to Edge Function (up to 20 MB); no Next.js proxy body-limit workaround. Use per-client leases, SHA-256 and stable upload ID for retries; immutable history and folder bindings.
+
+- Folder labels are explicitly editable at first upload because Suite lacks dedicated TM/mark/class fields. Existing folder IDs may be supplied and are checked against their selected parent. No existing folder renaming or TM-sync parity claim.
+
+- Hosted API verification passed 18 checks against isolated fixtures/private test root; fixture records/users removed and test Drive folders trashed. Browser/deployment evidence is recorded separately.
+
+- Final hosted verification: 23 API/browser checks, including Admin upload and Viewer history/no upload controls; seven original public tables match pre-change export after fixture cleanup. Deployment identifiers and root privacy blocker are in PROCESS.MD.

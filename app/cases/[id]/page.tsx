@@ -1,3 +1,4 @@
+import DriveUploadPanel from "@/components/drive-upload-panel";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireStaff } from "@/lib/auth";
@@ -44,6 +45,7 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
     {(role === "admin" || (role === "agent" && record.assigned_agent_id === user.id)) && <Card className="module-card"><CaseControls key={record.updated_at} caseId={id} status={record.status} assessment={record.assessment} assignedAgentId={record.assigned_agent_id} updatedAt={record.updated_at} agents={agents} role={role} /></Card>}
     <div className="payment-summary"><Card><p className="eyebrow">PAID</p><strong>{formatAmount(totals.paid)}</strong></Card><Card><p className="eyebrow">PENDING</p><strong>{formatAmount(totals.pending)}</strong></Card><Card><p className="eyebrow">PAYMENT STATUS</p><strong>{!entries.length ? "No entries" : totals.pending > 0 ? "Pending" : "Paid"}</strong></Card></div>
     <Card><p className="section-label">CASE PAYMENTS</p><h2>Ledger</h2><LedgerPanel caseId={id} entries={entries} canWrite={role === "admin"} /></Card>
+    {(role === "admin" || role === "viewer") && <Card className="module-card"><DriveUploadPanel caseId={id} clientId={record.client_id} clientCode={client.client_code} caseNumber={record.case_number} canWrite={role === "admin"} /></Card>}
     <Card className="module-card"><MailMergePanel caseId={id} values={caseValues(record, client)} categories={categories} templates={templates} documents={documents} canGenerate={role === "admin"} /></Card>
   </main></>;
 }

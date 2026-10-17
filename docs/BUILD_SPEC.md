@@ -1,5 +1,8 @@
 # Brandex Suite — Build Spec
 
+> Historical Suite baseline. Read [SYSTEM_ROADMAP.md](SYSTEM_ROADMAP.md) for the owner's later Database + Ledger scope and confirmed rules. It supersedes conflicting assumptions below, but does not claim they are implemented.
+
+
 Reconciled on 15 October 2026 from the supplied Build Spec, `AGENTS.md`, local
 `asset/Claude-Meger Advice` (the actual file has no extension), and
 `asset/Chat-history.txt`. The local exports are context, not application code or

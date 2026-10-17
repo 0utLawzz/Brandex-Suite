@@ -1,4 +1,14 @@
-## 2026-10-16 — Phase 5 role workspaces
+## 17 October 2026 - Suite Drive port
+
+Owner confirmed Suite target `xogbpsnsmephupbqsfgb`. Four server settings saved; additive migration and upload function deployed. 18 isolated hosted API checks passed; fixtures cleaned. Existing X root public-sharing inheritance is now blocked; owner privacy choice pending. Case upload/history panel implemented; exact frontend/browser release evidence tracked in `PROCESS.MD` and `CHANGELOG.md`. No mature CMS schema copied or existing business data reset.
+
+## 2026-10-16 - Owner workflow reconciliation (documentation only)
+
+- Current requirements and implementation roadmap are in `docs/SYSTEM_ROADMAP.md`; they supersede conflicting Suite phase-completion assumptions below.
+- Database + Client Ledger are the operational baseline; Mail Merge separate. All clients default Monthly Billing/Credit; no 60-percent rule. Preserve real business data.
+- No application, database, rollback, data import or deployment was performed. Live verification and bounded open decisions remain pending.
+
+## 2026-10-16 â€” Phase 5 role workspaces
 
 - Added role-specific `/dashboard` with RLS-scoped cases, paid/pending totals, document counts, status breakdown, recent cases, and Admin assignment queues/workloads.
 - Added case/client search, origin/status/assignment filters, per-case payment totals, and pagination. Agent navigation is scoped to My Cases; Viewer has read-only screens.
