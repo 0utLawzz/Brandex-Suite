@@ -8,3 +8,7 @@
 - Demo registration origin sets only the initial illustrative stage; it does not introduce automatic live workflow transitions.
 
 Verification: production build and TypeScript passed. Browser checks covered search, overdue filtering, case/document preview, registration, reset, Viewer presentation and stage-2 sample origin. No browser console errors observed. Mobile 390px check confirmed no page-level horizontal overflow after the containment fix; wide tables retain their own scroll region. Final preview uses the development server at http://localhost:3100/dashboard-demo. Source pushed on the separate demo branch; production dashboard not replaced.
+
+## 18 October 2026 - pending design changes synchronized
+
+Owner requested committing and pushing the existing local demo edits: Polymnia Framed typography, purple navigation accents, wordmark and application icons, and an illustrative A4 report view with colour selection and print styles. Font preview assets and their supplied license files are included. The report uses hard-coded fictional data; this is not a verified accounting report. Changes stay on the design/neo-dashboard-demo branch. The operational dashboard is not replaced by this sync.
