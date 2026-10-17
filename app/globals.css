@@ -202,3 +202,44 @@ fieldset { border:0; margin:0; padding:0; min-width:0; }
   .nb-card>h2:first-child { margin:-20px -20px 20px;padding:14px 20px; }
 }
 @media (prefers-reduced-motion:reduce) { .nb-nav-links a,.nb-nav-links button,.nb-tab { transition:none!important; } .nb-nav-links a.is-current::after { animation:none; } }
+
+/* Approved typography and Ledger header/footer, promoted from the design preview. */
+body { min-height:100vh;display:flex;flex-direction:column; }
+.phase-page,.theme-shell { width:100%;flex:1; }
+.workspace-footer { width:calc(100% - 64px);max-width:1356px;margin:auto auto 0;padding:20px 0 28px;border-top:2px solid var(--black);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--muted);font:700 12px/1.6 var(--font-mono);letter-spacing:.055em;text-transform:uppercase; }
+.workspace-footer a { text-decoration:none;color:var(--purple-dark); }
+@media screen {
+ body { font-size:20px;font-weight:700;letter-spacing:.035em; }
+ h1 { font-size:100px;font-weight:700;letter-spacing:.045em;overflow-wrap:anywhere; }
+ h2 { font-size:42px;font-weight:700;letter-spacing:.045em; }
+ h3 { font-size:37px;font-weight:700; }
+ button,input,select,textarea { font-family:var(--font-body);text-transform:uppercase;letter-spacing:.035em; }
+ .nb-navbar { position:sticky;top:0;z-index:100;min-height:88px;flex-wrap:wrap;gap:12px 24px;padding:12px 32px;border-bottom:3px solid var(--accent); }
+ .nb-brand { height:auto; }
+ .nb-brand img { width:174px;height:64px; }
+ .nb-suite-label { font-size:19px; }
+ .nb-suite-label small { display:block;font:700 10px/1.5 var(--font-body);color:var(--bg);margin-top:8px;letter-spacing:.06em; }
+ .nb-nav-links { flex:1;justify-content:flex-end; }
+ .nb-nav-links a,.nb-nav-links button { font-size:14.3px; }
+ .nb-button { font-size:14.3px; }
+ .nb-input { font-size:17.6px; }
+ .eyebrow,.section-label,.field>label,.field>.field-label,.nb-table th { font-size:13.2px; }
+ .nb-table { font-size:16.5px; }
+ .nb-tab strong { font-size:15.4px; }
+ .nb-tab small { font-size:14.3px; }
+ .nb-badge { font-size:12.1px; }
+ .dashboard-stats strong,.payment-summary strong { font-size:50.6px;letter-spacing:.05em; }
+ .phase-page,.theme-shell { animation:ledger-page-in .22s ease-out; }
+ .account-card { transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease; }
+ .account-card:hover { transform:translateY(-3px);box-shadow:4px 7px 0 var(--accent); }
+}
+@keyframes ledger-page-in { from { opacity:0;transform:translateY(5px); } to { opacity:1;transform:translateY(0); } }
+@media screen and (max-width:700px) {
+ .nb-navbar { position:static;padding:12px 16px; }
+ .nb-nav-links { justify-content:flex-start;width:100%; }
+ h1 { font-size:clamp(44px,10vw,72px); }
+ h2 { font-size:34px; }
+ .dashboard-stats strong,.payment-summary strong { font-size:39.6px; }
+ .workspace-footer { width:calc(100% - 32px);font-size:11px; }
+}
+@media (prefers-reduced-motion:reduce) { .phase-page,.theme-shell { animation:none; } .account-card { transition:none; } }

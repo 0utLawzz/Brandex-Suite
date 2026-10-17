@@ -120,4 +120,6 @@ Owner requested the Client Ledger PR review/merge, its preferred visual directio
 
 ## 18 October 2026 — isolated dashboard design demo
 
+Later owner approval: promoted the Polymnia typography to main Suite pages, removed the standalone demo route, and adapted Client Ledger's header/footer and 220ms entry/card motion. Added global print-hidden footer and updated branding rules. No database, payment, or permission changes.
+
 Added `/dashboard-demo` on `design/neo-dashboard-demo` for review before any live dashboard replacement. The attached Neo-Brutalism Theme.pdf supersedes historical font choices for this demo only: Bebas Neue, Space Grotesk, DM Mono. Uses fictional in-memory data; middleware skips session refresh for the demo route. No new authorization service. Existing operations remain unchanged. See `docs/DASHBOARD_DEMO.md` for scope and the source's surface-color ambiguity.

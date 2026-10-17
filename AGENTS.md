@@ -132,4 +132,6 @@ Lives in the same database as cases, not standalone — payment status should al
 
 ## Dashboard design prototype — 18 October 2026
 
+Owner approved promotion to the main application and removal of `/dashboard-demo`. The prototype route is retired. Use `docs/BRANDING.md` for the approved single Polymnia typography, sizes, uppercase display rule, assets, and Client Ledger header/footer motion reference. Preserve all operational data flows and authorization.
+
 `/dashboard-demo` is an isolated sample dashboard based on the owner's Neo-Brutalism Theme.pdf, using Bebas Neue / Space Grotesk / DM Mono. Keep its CSS scoped and its fictional browser data separate from production. Do not apply this demo's illustrative workflows or presentation-only role switch to operational authorization. See `docs/DASHBOARD_DEMO.md`.

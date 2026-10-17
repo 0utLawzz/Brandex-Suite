@@ -1,5 +1,7 @@
 # Neo-Brutalism dashboard demo — 18 October 2026
 
+**Retired:** Owner approved the main application design on 18 October. `/dashboard-demo` and its fictional data were removed. The following records the historical prototype only. Current rules live in `docs/BRANDING.md`.
+
 - Route: `/dashboard-demo`; isolated fictional data in browser memory. No database calls, sign-in, or external authorization. Middleware excludes this route from session refresh.
 - Source: owner's `Neo-Brutalism Theme.pdf`, version 1.0. Bebas Neue / Space Grotesk / DM Mono; exact source colors; 3px panel borders; 5px hard shadows; 6px card/button corners; square inputs; lift/press states.
 - Source ambiguity: palette labels #232323 as Off-White, but explicit card/input/button rules specify #FAF6EE. Use #FAF6EE for those components, #232323 only in dark navbar secondary elements.

@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className="theme-neobrutalism">{children}</body></html>;
+  return <html lang="en"><body className="theme-neobrutalism">{children}<footer className="workspace-footer no-print"><a href="/">BRANDEX LAW ASSOCIATES</a><span>SUITE · CASES / CLIENT LEDGER / DOCUMENTS</span><span>KEEPING THE LEGACY ALIVE</span></footer></body></html>;
 }
